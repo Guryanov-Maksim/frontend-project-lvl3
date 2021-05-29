@@ -6,6 +6,14 @@ import initView from './view.js';
 import resources from './locales';
 
 const validateUrl = (url) => {
+  yup.setLocale({
+    mixed: {
+      required: 'empty',
+    },
+    string: {
+      url: 'invalidUrl',
+    },
+  });
   const schema = yup.string().url().required();
   try {
     schema.validateSync(url);
