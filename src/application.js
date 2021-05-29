@@ -192,7 +192,7 @@ export default () => {
     });
 
     const watchRssFeed = (links) => {
-      setInterval(() => {
+      setTimeout(() => {
         const promises = links.map((link) => {
           const urlWithoutCorsProblem = new URL(avoidCorsProblem(link));
           urlWithoutCorsProblem.searchParams.append('disableCache', 'true');
@@ -208,7 +208,8 @@ export default () => {
           })
           .catch((error) => {
             console.log(error);
-          });
+          })
+          .finally(() => watchRssFeed(links));
       }, 5000);
     };
     watchRssFeed(watchedState.feeds.links);
