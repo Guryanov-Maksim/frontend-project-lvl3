@@ -138,7 +138,7 @@ export default () => {
 
     input.focus();
 
-    const watchedState = initView(state, elements);
+    const watchedState = initView(state, elements, i18nInstance);
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();

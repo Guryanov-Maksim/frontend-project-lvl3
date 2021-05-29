@@ -30,28 +30,31 @@ const renderFeedback = (feedback, container) => {
   container.textContent = feedback;
 };
 
-const renderFeeds = (feeds, container) => {
+const renderFeeds = (feeds, container, i18nInstance) => {
+  console.log(i18nInstance);
   const li = feeds.map((feed) => (
     `<li>
       <h3>${feed.title}</h3>
       <p>${feed.description}</p>
     </li>`
   ));
-  container.innerHTML = `<h2>Фиды</h2><ul>${li.join('')}</ul>`;
+  const header = i18nInstance.t('feeds.header');
+  container.innerHTML = `<h2>${header}</h2><ul>${li.join('')}</ul>`;
 };
 
-const renderPosts = (posts, container) => {
+const renderPosts = (posts, container, i18nInstance) => {
   const links = posts.map((post) => (
     `<li><a href=${post.link}>${post.title}</a></li>`
   ));
-  container.innerHTML = `<h2>Посты</h2><ul>${links.join('')}</ul>`;
+  const header = i18nInstance.t('posts.header');
+  container.innerHTML = `<h2>${header}</h2><ul>${links.join('')}</ul>`;
 };
 
-const initView = (state, elements) => {
+const initView = (state, elements, i18nInstance) => {
   const mapping = {
     'rssForm.feedback': () => renderFeedback(state.rssForm.feedback, elements.feedback),
-    'feeds.contents': () => renderFeeds(state.feeds.contents, elements.feedContainer),
-    posts: () => renderPosts(state.posts, elements.postsContainer),
+    'feeds.contents': () => renderFeeds(state.feeds.contents, elements.feedContainer, i18nInstance),
+    posts: () => renderPosts(state.posts, elements.postsContainer, i18nInstance),
     'rssForm.fields.url': () => renderInput(state, elements),
     'rssForm.status': () => renderForm(state, elements),
   };

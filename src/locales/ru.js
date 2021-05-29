@@ -7,5 +7,11 @@ export default {
       network: 'Ошибка сети',
     },
     success: 'RSS успешно загружен',
+    posts: {
+      header: 'Посты',
+    },
+    feeds: {
+      header: 'Фиды',
+    },
   },
 };
