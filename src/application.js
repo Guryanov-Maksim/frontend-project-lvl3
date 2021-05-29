@@ -192,6 +192,7 @@ export default () => {
     });
 
     const watchRssFeed = (links) => {
+      const timeout = 5000;
       setTimeout(() => {
         const promises = links.map((link) => {
           const urlWithoutCorsProblem = new URL(avoidCorsProblem(link));
@@ -210,7 +211,7 @@ export default () => {
             console.log(error);
           })
           .finally(() => watchRssFeed(links));
-      }, 5000);
+      }, timeout);
     };
     watchRssFeed(watchedState.feeds.links);
   });
