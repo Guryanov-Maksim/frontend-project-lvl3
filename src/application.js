@@ -1,7 +1,9 @@
 import axios from 'axios';
 import * as yup from 'yup';
 import _ from 'lodash';
+import i18next from 'i18next';
 import initView from './view.js';
+import resources from './locales';
 
 const validateUrl = (url) => {
   const schema = yup.string().url().required();
@@ -14,7 +16,9 @@ const validateUrl = (url) => {
 };
 
 const checkRssTracking = (link, attachedFeedLinks) => (
-  attachedFeedLinks.some((attachedLink) => attachedLink === link)
+  (attachedFeedLinks.some((attachedLink) => attachedLink === link))
+    ? 'isAdded'
+    : null
 );
 
 const getNewPosts = (posts, state, feed) => {
@@ -78,133 +82,127 @@ const avoidCorsProblem = (url) => (
   `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`
 );
 
-const handleError = (state, error) => {
-  switch (error) {
-    case ('this is a required field'):
-      state.rssForm.feedback = 'Не должно быть пустым';
-      break;
-    case ('this must be a valid URL'):
-      state.rssForm.feedback = 'Ссылка должна быть валидным URL';
-      break;
-    default:
-      throw new Error(`non-processed form error: ${error}`);
-  }
-
+const handleError = (state, error, i18nInstance) => {
   state.rssForm.fields.url = {
     error,
     valid: false,
   };
+  state.rssForm.feedback = i18nInstance.t(`errors.${error}`);
 };
 
 export default () => {
-  const state = {
-    error: null,
-    feeds: {
-      links: [],
-      contents: [],
-    },
-    posts: [],
-    rssForm: {
-      fields: {
-        url: {
-          valid: true,
-          error: null,
-          value: '',
-        },
-      },
-      feedback: '',
-      status: 'filling',
-    },
-  };
-
-  const elements = {
-    feedback: document.querySelector('.feedback'),
-    feedContainer: document.querySelector('.feeds'),
-    postsContainer: document.querySelector('.posts'),
-    input: document.querySelector('[data-url = "url"]'),
-    addButton: document.querySelector('#feed-submit'),
-  };
-
-  const input = document.querySelector('[data-url]');
-  const form = document.querySelector('.rss-form');
-
-  input.focus();
-
-  const watchedState = initView(state, elements);
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-    const rssLink = formData.get('rss-url');
-
-    const error = validateUrl(rssLink);
-
-    if (error) {
-      handleError(watchedState, error);
-      return;
-    }
-
-    const urlWithoutCorsProblem = new URL(avoidCorsProblem(rssLink));
-    urlWithoutCorsProblem.searchParams.append('disableCache', 'true');
-
-    const attachedFeedError = checkRssTracking(rssLink, state.feeds.links);
-
-    if (attachedFeedError) {
-      watchedState.rssForm.feedback = 'RSS уже подключен';
-      watchedState.rssForm.fields.url = {
-        error: attachedFeedError,
-        valid: false,
-      };
-      return;
-    }
-    watchedState.rssForm.fields.url = {
+  const i18nInstance = i18next.createInstance();
+  i18nInstance.init({
+    lng: 'ru',
+    debug: false,
+    resources,
+  }).then(() => {
+    const state = {
       error: null,
-      valid: true,
-      value: rssLink,
+      feeds: {
+        links: [],
+        contents: [],
+      },
+      posts: [],
+      rssForm: {
+        fields: {
+          url: {
+            valid: true,
+            error: null,
+            value: '',
+          },
+        },
+        feedback: '',
+        status: 'filling',
+      },
     };
-    watchedState.error = null;
-    watchedState.rssForm.status = 'loading';
-    axios.get(urlWithoutCorsProblem)
-      .then((response) => {
-        // console.log(data);
-        const { feed, posts } = parseRssContent(response.data.contents);
-        watchedState.rssForm.feedback = 'RSS успешно загружен';
-        watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
-        watchedState.feeds.links.push(rssLink);
-        watchedState.posts = [...posts, ...watchedState.posts];
-        watchedState.rssForm.status = 'filling';
-      })
-      .catch((err) => {
-        console.log(err);
-        watchedState.rssForm.feedback = 'Ошибка сети';
-        watchedState.rssForm.status = 'failed';
-        watchedState.error = error.message;
-      }).finally(() => {
-        form.reset();
-        input.focus();
-      });
-  });
 
-  const watchRssFeed = (links) => {
-    setInterval(() => {
-      const promises = links.map((link) => {
-        const urlWithoutCorsProblem = new URL(avoidCorsProblem(link));
-        urlWithoutCorsProblem.searchParams.append('disableCache', 'true');
-        return axios.get(urlWithoutCorsProblem);
-      });
-      Promise.all(promises)
+    const elements = {
+      feedback: document.querySelector('.feedback'),
+      feedContainer: document.querySelector('.feeds'),
+      postsContainer: document.querySelector('.posts'),
+      input: document.querySelector('[data-url = "url"]'),
+      addButton: document.querySelector('#feed-submit'),
+    };
+
+    const input = document.querySelector('[data-url]');
+    const form = document.querySelector('.rss-form');
+
+    input.focus();
+
+    const watchedState = initView(state, elements);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+      const rssLink = formData.get('rss-url');
+
+      const error = validateUrl(rssLink);
+      if (error) {
+        handleError(watchedState, error, i18nInstance);
+        return;
+      }
+
+      const attachedFeedError = checkRssTracking(rssLink, state.feeds.links);
+      if (attachedFeedError) {
+        watchedState.rssForm.feedback = i18nInstance.t(`errors.${attachedFeedError}`);
+        watchedState.rssForm.fields.url = {
+          error: attachedFeedError,
+          valid: false,
+        };
+        return;
+      }
+
+      const urlWithoutCorsProblem = new URL(avoidCorsProblem(rssLink));
+      urlWithoutCorsProblem.searchParams.append('disableCache', 'true');
+
+      watchedState.rssForm.fields.url = {
+        error: null,
+        valid: true,
+        value: rssLink,
+      };
+      watchedState.error = null;
+      watchedState.rssForm.status = 'loading';
+      axios.get(urlWithoutCorsProblem)
         .then((response) => {
-          response.forEach((xml) => {
-            const { feed, posts } = parseRssContent(xml.data.contents);
-            const newPosts = getNewPosts(posts, state, feed);
-            watchedState.posts = [...newPosts, ...watchedState.posts];
-          });
+          // console.log(data);
+          const { feed, posts } = parseRssContent(response.data.contents);
+          watchedState.rssForm.feedback = i18nInstance.t('success');
+          watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
+          watchedState.feeds.links.push(rssLink);
+          watchedState.posts = [...posts, ...watchedState.posts];
+          watchedState.rssForm.status = 'filling';
+          form.reset();
+          input.focus();
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          watchedState.rssForm.feedback = i18nInstance.t('errors.network');
+          watchedState.rssForm.status = 'failed';
+          watchedState.error = error.message;
         });
-    }, 5000);
-  };
-  watchRssFeed(watchedState.feeds.links);
+    });
+
+    const watchRssFeed = (links) => {
+      setInterval(() => {
+        const promises = links.map((link) => {
+          const urlWithoutCorsProblem = new URL(avoidCorsProblem(link));
+          urlWithoutCorsProblem.searchParams.append('disableCache', 'true');
+          return axios.get(urlWithoutCorsProblem);
+        });
+        Promise.all(promises)
+          .then((response) => {
+            response.forEach((xml) => {
+              const { feed, posts } = parseRssContent(xml.data.contents);
+              const newPosts = getNewPosts(posts, state, feed);
+              watchedState.posts = [...newPosts, ...watchedState.posts];
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }, 5000);
+    };
+    watchRssFeed(watchedState.feeds.links);
+  });
 };
