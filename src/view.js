@@ -1,5 +1,8 @@
 import onChange from 'on-change';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
+// to do:
+// 1. exclude xss violations
+// 2. Не содержит RSS
 
 const renderForm = (state, elements) => {
   switch (state.rssForm.status) {
@@ -18,7 +21,6 @@ const renderForm = (state, elements) => {
 };
 
 const renderInput = (state, { input }) => {
-  console.log(state.rssForm.fields.url.valid);
   if (!state.rssForm.fields.url.valid) {
     input.classList.add('border', 'border-warning');
     return;
@@ -31,7 +33,6 @@ const renderFeedback = (feedback, container) => {
 };
 
 const renderFeeds = (feeds, container, i18nInstance) => {
-  console.log(i18nInstance);
   const li = feeds.map((feed) => (
     `<li>
       <h3>${feed.title}</h3>
@@ -42,24 +43,58 @@ const renderFeeds = (feeds, container, i18nInstance) => {
   container.innerHTML = `<h2>${header}</h2><ul>${li.join('')}</ul>`;
 };
 
-const renderPosts = (posts, container, i18nInstance) => {
-  const links = posts.map((post) => (
-    `<li><a href=${post.link}>${post.title}</a></li>`
-  ));
+const renderPosts = (state, elements, i18nInstance) => {
   const header = i18nInstance.t('posts.header');
-  container.innerHTML = `<h2>${header}</h2><ul>${links.join('')}</ul>`;
+  elements.postsContainer.innerHTML = `<h2>${header}</h2>`;
+  const ul = document.createElement('ul');
+  state.posts.forEach((post) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <a class="fw-bold font-weight-bold" href=${post.link} data-id="${post.id}">${post.title}</a>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Просмотр
+      </button>`;
+    // const browseButton = li.querySelector('[data-bs-toggle="modal"]');
+    const seeLink = li.querySelector('[data-id]');
+    seeLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.open(post.link, '_blank').focus();
+    });
+
+    if (state.uiState.visitedPostId.includes(post.id)) {
+      seeLink.classList.remove('fw-bold', 'font-weight-bold');
+      seeLink.classList.add('fw-normal', 'font-weight-normal');
+    } else {
+      seeLink.classList.add('fw-bold', 'font-weight-bold');
+      seeLink.classList.remove('fw-normal', 'font-weight-normal');
+    }
+
+    li.addEventListener('click', () => {
+      // e.preventDefault();
+      elements.modalTitle.textContent = post.title;
+      elements.modalBody.textContent = post.description;
+      elements.modalDetails.setAttribute('href', post.link);
+      seeLink.classList.remove('fw-bold', 'font-weight-bold');
+      seeLink.classList.add('fw-normal', 'font-weight-normal');
+      state.uiState.visitedPostId.push(post.id);
+      console.log(state.uiState.visitedPostId);
+    });
+    ul.appendChild(li);
+  });
+  elements.postsContainer.appendChild(ul);
 };
 
 const initView = (state, elements, i18nInstance) => {
   const mapping = {
     'rssForm.feedback': () => renderFeedback(state.rssForm.feedback, elements.feedback),
     'feeds.contents': () => renderFeeds(state.feeds.contents, elements.feedContainer, i18nInstance),
-    posts: () => renderPosts(state.posts, elements.postsContainer, i18nInstance),
+    posts: () => renderPosts(state, elements, i18nInstance),
     'rssForm.fields.url': () => renderInput(state, elements),
     'rssForm.status': () => renderForm(state, elements),
   };
 
   const watchedState = onChange(state, (path) => {
+    console.log(path);
     if (mapping[path]) {
       mapping[path]();
     }

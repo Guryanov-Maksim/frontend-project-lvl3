@@ -64,12 +64,14 @@ const parseRssContent = (content) => {
     const description = postDescriptionElement.textContent;
     const postPubDateElement = dom.querySelector('pubDate');
     const postPubDate = postPubDateElement.textContent;
+    const id = _.uniqueId();
     const post = {
       title,
       link,
       description,
       feedId,
       postPubDate,
+      id,
     };
     return [...acc, post];
   }, []);
@@ -123,6 +125,9 @@ export default () => {
         feedback: '',
         status: 'filling',
       },
+      uiState: {
+        visitedPostId: [],
+      },
     };
 
     const elements = {
@@ -131,6 +136,10 @@ export default () => {
       postsContainer: document.querySelector('.posts'),
       input: document.querySelector('[data-url = "url"]'),
       addButton: document.querySelector('#feed-submit'),
+      modal: document.querySelector('#exampleModal'),
+      modalTitle: document.querySelector('.modal-title'),
+      modalBody: document.querySelector('.modal-body'),
+      modalDetails: document.querySelector('[data-details]'),
     };
 
     const input = document.querySelector('[data-url]');
@@ -152,7 +161,7 @@ export default () => {
         return;
       }
 
-      const attachedFeedError = checkRssTracking(rssLink, state.feeds.links);
+      const attachedFeedError = checkRssTracking(rssLink, watchedState.feeds.links);
       if (attachedFeedError) {
         watchedState.rssForm.feedback = i18nInstance.t(`errors.${attachedFeedError}`);
         watchedState.rssForm.fields.url = {
@@ -179,6 +188,7 @@ export default () => {
           watchedState.rssForm.feedback = i18nInstance.t('success');
           watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
           watchedState.feeds.links.push(rssLink);
+          console.log([...posts, ...watchedState.posts]);
           watchedState.posts = [...posts, ...watchedState.posts];
           watchedState.rssForm.status = 'filling';
           form.reset();
@@ -187,12 +197,20 @@ export default () => {
         .catch(() => {
           watchedState.rssForm.feedback = i18nInstance.t('errors.network');
           watchedState.rssForm.status = 'failed';
-          watchedState.error = error.message;
+          // watchedState.error = i18nInstance.t('errors.network');
         });
     });
 
     const watchRssFeed = (links) => {
       const timeout = 5000;
+      // const postLinks = document.querySelectorAll('[data-id]');
+      // console.log(postLinks);
+      // postLinks.forEach((link) => {
+      //   link.addEventListener('click', (e) => {
+      //     e.preventDefault();
+      //     watchedState.uiState.visitedPostId.push(link.dataset.id);
+      //   });
+      // });
       setTimeout(() => {
         const promises = links.map((link) => {
           const urlWithoutCorsProblem = new URL(avoidCorsProblem(link));
