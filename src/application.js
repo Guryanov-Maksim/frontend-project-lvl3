@@ -44,7 +44,6 @@ const getNewPosts = (posts, state, feed) => {
 const parseRssContent = (content) => {
   const domparser = new DOMParser();
   const dom = domparser.parseFromString(content, 'application/xml');
-  // console.log(dom);
   const feedTitleElement = dom.querySelector('title');
   const feedTitle = feedTitleElement.textContent;
   const feedDescriptionElement = dom.querySelector('description');
@@ -184,7 +183,6 @@ export default () => {
       watchedState.rssForm.status = 'loading';
       axios.get(urlWithoutCorsProblem)
         .then((response) => {
-          // console.log(data);
           const { feed, posts } = parseRssContent(response.data.contents);
           watchedState.rssForm.feedback = i18nInstance.t('success');
           watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
@@ -198,21 +196,11 @@ export default () => {
         .catch(() => {
           watchedState.rssForm.feedback = i18nInstance.t('errors.network');
           watchedState.rssForm.status = 'failed';
-          // watchedState.error = i18nInstance.t('errors.network');
         });
     });
 
-
     const watchRssFeed = (links) => {
       const timeout = 5000;
-      // const postLinks = document.querySelectorAll('[data-id]');
-      // console.log(postLinks);
-      // postLinks.forEach((link) => {
-      //   link.addEventListener('click', (e) => {
-      //     e.preventDefault();
-      //     watchedState.uiState.visitedPostId.push(link.dataset.id);
-      //   });
-      // });
       setTimeout(() => {
         const promises = links.map((link) => {
           const urlWithoutCorsProblem = new URL(avoidCorsProblem(link));
