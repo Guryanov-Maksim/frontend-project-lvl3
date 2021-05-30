@@ -70,7 +70,6 @@ const renderPosts = (state, elements, i18nInstance) => {
     }
 
     li.addEventListener('click', () => {
-      // e.preventDefault();
       elements.modalTitle.textContent = post.title;
       elements.modalBody.textContent = post.description;
       elements.modalDetails.setAttribute('href', post.link);

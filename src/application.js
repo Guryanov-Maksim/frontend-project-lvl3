@@ -101,9 +101,10 @@ const handleError = (state, error, i18nInstance) => {
 };
 
 export default () => {
+  const defaultLanguage = 'ru';
   const i18nInstance = i18next.createInstance();
   i18nInstance.init({
-    lng: 'ru',
+    lng: defaultLanguage,
     debug: false,
     resources,
   }).then(() => {
@@ -200,6 +201,7 @@ export default () => {
           // watchedState.error = i18nInstance.t('errors.network');
         });
     });
+
 
     const watchRssFeed = (links) => {
       const timeout = 5000;
