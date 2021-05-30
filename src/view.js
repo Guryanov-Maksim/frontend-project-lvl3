@@ -54,7 +54,6 @@ const renderPosts = (state, elements, i18nInstance) => {
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Просмотр
       </button>`;
-    // const browseButton = li.querySelector('[data-bs-toggle="modal"]');
     const seeLink = li.querySelector('[data-id]');
     seeLink.addEventListener('click', (e) => {
       e.preventDefault();
