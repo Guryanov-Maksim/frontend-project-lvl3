@@ -1,0 +1,38 @@
+{
+    "data": {
+        "contents": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\">\n  <channel>\n    <title>Новые уроки на Хекслете</title>\n    <description>Практические уроки по программированию</description>\n    <link>https://ru.hexlet.io/</link>\n    <webMaster>info@hexlet.io</webMaster>\n    <item>\n      <title>Проверка составных и недетерминированных данных / Тестирование фронтенда</title>\n      <guid isPermaLink=\"false\">1980</guid>\n      <link>https://ru.hexlet.io/courses/frontend-testing-react/lessons/validation-data/theory_unit</link>\n      <description>Цель: Проверка составных и недетерминированных данных.</description>\n      <pubDate>Thu, 27 May 2021 12:26:48 +0000</pubDate>\n    </item>\n    <item>\n      <title>Property-based тестирование / Тестирование фронтенда</title>\n      <guid isPermaLink=\"false\">1979</guid>\n      <link>https://ru.hexlet.io/courses/frontend-testing-react/lessons/property-based-testing/theory_unit</link>\n      <description>Цель: Что такое property-based тестирование?</description>\n      <pubDate>Thu, 27 May 2021 12:10:29 +0000</pubDate>\n    </item>\n    <item>\n      <title>Unit-тестирование / Тестирование фронтенда</title>\n      <guid isPermaLink=\"false\">1978</guid>\n      <link>https://ru.hexlet.io/courses/frontend-testing-react/lessons/unit-testing/theory_unit</link>\n      <description>Цель: Что такое unit-тестирование?</description>\n      <pubDate>Thu, 27 May 2021 12:10:14 +0000</pubDate>\n    </item>\n    <item>\n      <title>Основы / Java: Интенсивный курс</title>\n      <guid isPermaLink=\"false\">1976</guid>\n      <link>https://ru.hexlet.io/courses/java-core/lessons/basics/theory_unit</link>\n      <description>Цель: Познакомиться с основами языка Java.</description>\n      <pubDate>Tue, 25 May 2021 09:16:41 +0000</pubDate>\n    </item>\n    <item>\n      <title>Настройка окружения / Java: Интенсивный курс</title>\n      <guid isPermaLink=\"false\">1977</guid>\n      <link>https://ru.hexlet.io/courses/java-core/lessons/hello-world/theory_unit</link>\n      <description>Цель: Научиться разворачивать окружения для разработки.</description>\n      <pubDate>Tue, 25 May 2021 09:16:17 +0000</pubDate>\n    </item>\n    <item>\n      <title>Моки / Python: Продвинутое тестирование</title>\n      <guid isPermaLink=\"false\">1970</guid>\n      <link>https://ru.hexlet.io/courses/python-advanced-testing/lessons/mocking/theory_unit</link>\n      <description>Цель: Познакомиться с мокингом и научиться отличать их от стабов</description>\n      <pubDate>Tue, 25 May 2021 05:12:38 +0000</pubDate>\n    </item>\n    <item>\n      <title>Манкипатчинг / Python: Продвинутое тестирование</title>\n      <guid isPermaLink=\"false\">1965</guid>\n      <link>https://ru.hexlet.io/courses/python-advanced-testing/lessons/monkey-patching/theory_unit</link>\n      <description>Цель: Научиться использовать подмену методов с пользой</description>\n      <pubDate>Tue, 25 May 2021 05:12:27 +0000</pubDate>\n    </item>\n    <item>\n      <title>Тестирование HTTP-запросов / Python: Продвинутое тестирование</title>\n      <guid isPermaLink=\"false\">1966</guid>\n      <link>https://ru.hexlet.io/courses/python-advanced-testing/lessons/stub/theory_unit</link>\n      <description>Цель: Познакомиться со стаббингом</description>\n      <pubDate>Tue, 25 May 2021 05:12:16 +0000</pubDate>\n    </item>\n    <item>\n      <title>Инверсия зависимостей / Python: Продвинутое тестирование</title>\n      <guid isPermaLink=\"false\">1967</guid>\n      <link>https://ru.hexlet.io/courses/python-advanced-testing/lessons/elimination-of-side-effects/theory_unit</link>\n      <description>Цель: Научиться устранять побочные эффекты с помощью полиморфизма</description>\n      <pubDate>Tue, 25 May 2021 05:12:02 +0000</pubDate>\n    </item>\n    <item>\n      <title>Заключение / Python: Декларативное программирование</title>\n      <guid isPermaLink=\"false\">1975</guid>\n      <link>https://ru.hexlet.io/courses/python-declarative-programming/lessons/outro/theory_unit</link>\n      <description>Цель: Узнать, что осталось за рамками данного курса, но о чём неплохо бы иметь представление</description>\n      <pubDate>Fri, 21 May 2021 12:21:30 +0000</pubDate>\n    </item>\n  </channel>\n</rss>\n",
+        "status": {
+            "url": "https://ru.hexlet.io/lessons.rss",
+            "content_type": "application/rss+xml; charset=utf-8",
+            "content_length": 5009,
+            "http_code": 200,
+            "response_time": 255
+        }
+    },
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+        "cache-control": "public, max-age=0, stale-if-error=600",
+        "content-length": "5291",
+        "content-type": "application/json; charset=utf-8"
+    },
+    "config": {
+        "url": "https://hexlet-allorigins.herokuapp.com/get?url=https%3A%2F%2Fru.hexlet.io%2Flessons.rss&disableCache=true",
+        "method": "get",
+        "headers": {
+            "Accept": "application/json, text/plain, */*"
+        },
+        "transformRequest": [
+            null
+        ],
+        "transformResponse": [
+            null
+        ],
+        "timeout": 0,
+        "xsrfCookieName": "XSRF-TOKEN",
+        "xsrfHeaderName": "X-XSRF-TOKEN",
+        "maxContentLength": -1,
+        "maxBodyLength": -1
+    },
+    "request": {}
+}

@@ -8,3 +8,5 @@ build:
 	npx webpack
 develop:
 	npx webpack serve
+test:
+	npm test
