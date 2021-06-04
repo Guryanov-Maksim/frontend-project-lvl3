@@ -226,6 +226,7 @@ export default () => {
           watchedState.rssForm.status = 'failed';
         })
         .then((response) => {
+          console.log(response);
           const { feed, posts } = parseRssContent(response.data.contents);
           watchedState.rssForm.feedback = i18nInstance.t('success');
           watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
