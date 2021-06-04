@@ -1,0 +1,10 @@
+{
+    "contents": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:atom=\"http://www.w3.org/2005/Atom\" version=\"2.0\"><channel><title><![CDATA[Lorem ipsum feed for an interval of 1 minutes with 2 item(s)]]></title><description><![CDATA[Feed 1 description]]></description><link>http://example.com/</link><generator>RSS for Node</generator><lastBuildDate>Fri, 04 Jun 2021 10:16:13 GMT</lastBuildDate><pubDate>Fri, 04 Jun 2021 10:16:00 GMT</pubDate><copyright><![CDATA[Michael Bertolacci, licensed under a Creative Commons Attribution 3.0 Unported License.]]></copyright><ttl>1</ttl><item><title><![CDATA[Lorem ipsum 2021-06-04T10:16:00Z]]></title><description><![CDATA[Ea mollit voluptate labore amet culpa pariatur amet quis adipisicing qui consequat excepteur et.]]></description><link>http://example.com/test/1622801760</link><guid isPermaLink=\"true\">http://example.com/test/1622801760</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 04 Jun 2021 10:16:00 GMT</pubDate></item><item><title><![CDATA[Lorem ipsum 2021-06-04T10:15:00Z]]></title><description><![CDATA[Dolor sint sit do minim et consectetur ex ad enim esse deserunt esse quis.]]></description><link>http://example.com/test/1622801700</link><guid isPermaLink=\"true\">http://example.com/test/1622801700</guid><dc:creator><![CDATA[John Smith]]></dc:creator><pubDate>Fri, 04 Jun 2021 10:15:00 GMT</pubDate></item></channel></rss>",
+    "status": {
+        "url": "http://lorem-rss.herokuapp.com/feed?length=2",
+        "content_type": "application/rss+xml; charset=utf-8",
+        "content_length": 1513,
+        "http_code": 200,
+        "response_time": 9
+    }
+}
