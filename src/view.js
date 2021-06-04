@@ -3,15 +3,19 @@ import onChange from 'on-change';
 // to do:
 // 1. exclude xss violations
 // 2. Не содержит RSS
-
+// 3. понять как я запустил тесты (помог бабель?)
+// 4. Почему в тестах нужно добавлять 'access-control-allow-origin': '*',
+// 5. посмотреть обязателен ли pubDate в RSS
 const renderForm = (state, elements) => {
   switch (state.rssForm.status) {
     case 'loading':
       elements.addButton.setAttribute('disabled', true);
+      elements.input.setAttribute('disabled', true);
       break;
     case 'filling':
     case 'failed': {
       elements.addButton.removeAttribute('disabled');
+      elements.input.removeAttribute('disabled');
       break;
     }
     default: {
@@ -75,7 +79,6 @@ const renderPosts = (state, elements, i18nInstance) => {
       seeLink.classList.remove('fw-bold', 'font-weight-bold');
       seeLink.classList.add('fw-normal', 'font-weight-normal');
       state.uiState.visitedPostId.push(post.id);
-      console.log(state.uiState.visitedPostId);
     });
     ul.appendChild(li);
   });
@@ -92,7 +95,6 @@ const initView = (state, elements, i18nInstance) => {
   };
 
   const watchedState = onChange(state, (path) => {
-    console.log(path);
     if (mapping[path]) {
       mapping[path]();
     }
