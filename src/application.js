@@ -200,7 +200,7 @@ export default () => {
       watchedState.rssForm.status = 'loading';
       axios.get(urlWithoutCorsProblem)
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           // console.log(response.data.status.content_type);
           // const error = isRssIncluded(response);
           // console.log(isRssIncluded(response));
@@ -210,23 +210,7 @@ export default () => {
             watchedState.rssForm.status = 'failed';
             return;
           }
-          return response;
-          // const { feed, posts } = parseRssContent(response.data.contents);
-          // watchedState.rssForm.feedback = i18nInstance.t('success');
-          // watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
-          // watchedState.feeds.links.push(rssLink);
-          // watchedState.posts = [...posts, ...watchedState.posts];
-          // watchedState.rssForm.status = 'filling';
-          // form.reset();
-          // input.focus();
           // return response;
-        })
-        .catch(() => {
-          watchedState.rssForm.feedback = i18nInstance.t('errors.network');
-          watchedState.rssForm.status = 'failed';
-        })
-        .then((response) => {
-          console.log(response);
           const { feed, posts } = parseRssContent(response.data.contents);
           watchedState.rssForm.feedback = i18nInstance.t('success');
           watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
@@ -235,11 +219,27 @@ export default () => {
           watchedState.rssForm.status = 'filling';
           form.reset();
           input.focus();
+          // return response;
         })
-        .catch((error) => {
-          watchedState.rssForm.feedback = `${error}`;
+        .catch(() => {
+          watchedState.rssForm.feedback = i18nInstance.t('errors.network');
           watchedState.rssForm.status = 'failed';
         });
+        // .then((response) => {
+        //   console.log(response);
+        //   const { feed, posts } = parseRssContent(response.data.contents);
+        //   watchedState.rssForm.feedback = i18nInstance.t('success');
+        //   watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
+        //   watchedState.feeds.links.push(rssLink);
+        //   watchedState.posts = [...posts, ...watchedState.posts];
+        //   watchedState.rssForm.status = 'filling';
+        //   form.reset();
+        //   input.focus();
+        // })
+        // .catch((error) => {
+        //   watchedState.rssForm.feedback = `${error}`;
+        //   watchedState.rssForm.status = 'failed';
+        // });
     });
 
     const watchRssFeed = (links) => {
