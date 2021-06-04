@@ -14,13 +14,20 @@ const validateUrl = (url) => {
       url: 'invalidUrl',
     },
   });
-  const schema = yup.string().url().required();
+  const schema = yup.string().trim().url().required();
   try {
     schema.validateSync(url);
     return null;
   } catch (error) {
     return error.message;
   }
+};
+
+const isRssIncluded = (response) => {
+  if (response.data.status.content_type.includes('application/rss+xml')) {
+    return true;
+  }
+  return false;
 };
 
 const checkRssTracking = (link, attachedFeedLinks) => (
@@ -44,6 +51,15 @@ const getNewPosts = (posts, state, feed) => {
 const parseRssContent = (content) => {
   const domparser = new DOMParser();
   const dom = domparser.parseFromString(content, 'application/xml');
+  // console.log(dom);
+  // const error = dom.querySelector('parsererror');
+  // if (error) {
+  //   return {
+  //     feed: null,
+  //     posts: null,
+  //     isValid: false,
+  //   };
+  // }
   const feedTitleElement = dom.querySelector('title');
   const feedTitle = feedTitleElement.textContent;
   const feedDescriptionElement = dom.querySelector('description');
@@ -59,9 +75,9 @@ const parseRssContent = (content) => {
     const title = postTitleElement.textContent;
     const postLinkElement = postElement.querySelector('link');
     const link = postLinkElement.textContent;
-    const postDescriptionElement = dom.querySelector('description');
+    const postDescriptionElement = postElement.querySelector('description');
     const description = postDescriptionElement.textContent;
-    const postPubDateElement = dom.querySelector('pubDate');
+    const postPubDateElement = postElement.querySelector('pubDate');
     const postPubDate = postPubDateElement.textContent;
     const id = _.uniqueId();
     const post = {
@@ -173,6 +189,7 @@ export default () => {
 
       const urlWithoutCorsProblem = new URL(avoidCorsProblem(rssLink));
       urlWithoutCorsProblem.searchParams.append('disableCache', 'true');
+      // console.log(urlWithoutCorsProblem);
 
       watchedState.rssForm.fields.url = {
         error: null,
@@ -183,11 +200,19 @@ export default () => {
       watchedState.rssForm.status = 'loading';
       axios.get(urlWithoutCorsProblem)
         .then((response) => {
+          // console.log(response.data.status.content_type);
+          // const error = isRssIncluded(response);
+          // console.log(isRssIncluded(response));
+          if (!isRssIncluded(response)) {
+            watchedState.rssForm.feedback = i18nInstance.t('errors.withoutRss');
+            // console.log(watchedState.rssForm.feedback);
+            watchedState.rssForm.status = 'failed';
+            return;
+          }
           const { feed, posts } = parseRssContent(response.data.contents);
           watchedState.rssForm.feedback = i18nInstance.t('success');
           watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
           watchedState.feeds.links.push(rssLink);
-          console.log([...posts, ...watchedState.posts]);
           watchedState.posts = [...posts, ...watchedState.posts];
           watchedState.rssForm.status = 'filling';
           form.reset();
@@ -209,6 +234,7 @@ export default () => {
         });
         Promise.all(promises)
           .then((response) => {
+            // console.log(response);
             response.forEach((xml) => {
               const { feed, posts } = parseRssContent(xml.data.contents);
               const newPosts = getNewPosts(posts, state, feed);
