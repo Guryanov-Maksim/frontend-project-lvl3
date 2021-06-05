@@ -38,7 +38,7 @@ const renderFeedback = (feedback, container) => {
 
 const renderFeeds = (feeds, container, i18nInstance) => {
   const li = feeds.map((feed) => (
-    `<li>
+    `<li data-testid="feed">
       <h3>${feed.title}</h3>
       <p>${feed.description}</p>
     </li>`
@@ -54,7 +54,7 @@ const renderPosts = (state, elements, i18nInstance) => {
   state.posts.forEach((post) => {
     const li = document.createElement('li');
     li.innerHTML = `
-      <a class="fw-bold font-weight-bold" href=${post.link} data-id="${post.id}">${post.title}</a>
+      <a class="fw-bold font-weight-bold" href=${post.link} data-id="${post.id}" data-testid="post">${post.title}</a>
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Просмотр
       </button>`;

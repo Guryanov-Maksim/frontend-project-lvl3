@@ -23,13 +23,6 @@ const validateUrl = (url) => {
   }
 };
 
-const isRssIncluded = (response) => {
-  if (response.data.status.content_type.includes('application/rss+xml')) {
-    return true;
-  }
-  return false;
-};
-
 const checkRssTracking = (link, attachedFeedLinks) => (
   (attachedFeedLinks.some((attachedLink) => attachedLink === link))
     ? 'isAdded'
