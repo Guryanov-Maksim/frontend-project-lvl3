@@ -10,12 +10,12 @@ const renderForm = (state, elements) => {
   switch (state.rssForm.status) {
     case 'loading':
       elements.addButton.setAttribute('disabled', true);
-      elements.input.setAttribute('disabled', true);
+      elements.input.setAttribute('readonly', true);
       break;
     case 'filling':
     case 'failed': {
       elements.addButton.removeAttribute('disabled');
-      elements.input.removeAttribute('disabled');
+      elements.input.removeAttribute('readonly');
       break;
     }
     default: {

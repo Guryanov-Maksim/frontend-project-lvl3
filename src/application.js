@@ -232,21 +232,21 @@ export default () => {
           watchedState.rssForm.feedback = i18nInstance.t('errors.network');
           watchedState.rssForm.status = 'failed';
         });
-        // .then((response) => {
-        //   console.log(response);
-        //   const { feed, posts } = parseRssContent(response.data.contents);
-        //   watchedState.rssForm.feedback = i18nInstance.t('success');
-        //   watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
-        //   watchedState.feeds.links.push(rssLink);
-        //   watchedState.posts = [...posts, ...watchedState.posts];
-        //   watchedState.rssForm.status = 'filling';
-        //   form.reset();
-        //   input.focus();
-        // })
-        // .catch((error) => {
-        //   watchedState.rssForm.feedback = `${error}`;
-        //   watchedState.rssForm.status = 'failed';
-        // });
+      // .then((response) => {
+      //   console.log(response);
+      //   const { feed, posts } = parseRssContent(response.data.contents);
+      //   watchedState.rssForm.feedback = i18nInstance.t('success');
+      //   watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
+      //   watchedState.feeds.links.push(rssLink);
+      //   watchedState.posts = [...posts, ...watchedState.posts];
+      //   watchedState.rssForm.status = 'filling';
+      //   form.reset();
+      //   input.focus();
+      // })
+      // .catch((error) => {
+      //   watchedState.rssForm.feedback = `${error}`;
+      //   watchedState.rssForm.status = 'failed';
+      // });
     });
 
     const watchRssFeed = (links) => {
