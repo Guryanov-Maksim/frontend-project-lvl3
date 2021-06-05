@@ -3,7 +3,7 @@ export default {
     errors: {
       empty: 'Не должно быть пустым',
       invalidUrl: 'Ссылка должна быть валидным URL',
-      isAdded: 'RSS уже подключен',
+      isAdded: 'RSS уже существует',
       network: 'Ошибка сети',
       withoutRss: 'Ресурс не содержит валидный RSS',
     },
