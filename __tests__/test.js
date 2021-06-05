@@ -5,7 +5,7 @@ import nock from 'nock';
 import fs from 'fs';
 import path from 'path';
 
-import init from '../src/application.js';
+import init from '../src/init.js';
 
 const pathToIndex = path.join('__fixtures__', 'index.html');
 const pathToResponse = path.join('__fixtures__', 'response.json');
