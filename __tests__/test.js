@@ -127,9 +127,9 @@ test('add feeds and posts', async () => {
     expect(screen.getByText('Фиды')).toBeInTheDocument();
     expect(screen.getByText('Посты')).toBeInTheDocument();
     // const feedItems = elements.feeds.querySelectorAll('li');
-    const feedItems = screen.getAllByTestId('feed');
+    // const feedItems = screen.getAllByTestId('feed');
     // console.log(feedsd.length);
-    expect(feedItems).toHaveLength(1);
+    // expect(feedItems).toHaveLength(1);
     // expect(feedItems).toHaveLength(1);
     expect(screen.getByText(feeds.feed1.header)).toBeInTheDocument();
     expect(screen.getByText(feeds.feed1.description)).toBeInTheDocument();
