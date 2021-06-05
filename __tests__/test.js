@@ -99,11 +99,11 @@ test('form is disabled while submitting', async () => {
   expect(elements.input).not.toBeDisabled();
   userEvent.click(elements.submit);
   expect(elements.submit).toBeDisabled();
-  expect(elements.input).toBeDisabled();
+  expect(elements.input).toHaveAttribute('readonly');
 
   await waitFor(() => {
     expect(elements.submit).not.toBeDisabled();
-    expect(elements.input).not.toBeDisabled();
+    expect(elements.input).not.toHaveAttribute('readonly');
   });
 
   scope.done();
@@ -242,5 +242,5 @@ test('should not add feed twice', async () => {
   });
   userEvent.type(elements.input, 'http://localhost.com/feed');
   userEvent.click(elements.submit);
-  expect(elements.feedback).toHaveTextContent('RSS уже подключен');
+  expect(elements.feedback).toHaveTextContent('RSS уже существует');
 });
