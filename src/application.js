@@ -52,14 +52,14 @@ const parseRssContent = (content) => {
   const domparser = new DOMParser();
   const dom = domparser.parseFromString(content, 'application/xml');
   // console.log(dom);
-  // const error = dom.querySelector('parsererror');
-  // if (error) {
-  //   return {
-  //     feed: null,
-  //     posts: null,
-  //     isValid: false,
-  //   };
-  // }
+  const error = dom.querySelector('parsererror');
+  if (error) {
+    return {
+      feed: null,
+      posts: null,
+      isValid: false,
+    };
+  }
   const feedTitleElement = dom.querySelector('title');
   const feedTitle = feedTitleElement.textContent;
   const feedDescriptionElement = dom.querySelector('description');
@@ -100,6 +100,7 @@ const parseRssContent = (content) => {
   return {
     feed,
     posts,
+    isValid: true,
   };
 };
 
@@ -204,14 +205,20 @@ export default () => {
           // console.log(response.data.status.content_type);
           // const error = isRssIncluded(response);
           // console.log(isRssIncluded(response));
-          if (!isRssIncluded(response)) {
+          // if (!isRssIncluded(response)) {
+          //   watchedState.rssForm.feedback = i18nInstance.t('errors.withoutRss');
+          //   // console.log(watchedState.rssForm.feedback);
+          //   watchedState.rssForm.status = 'failed';
+          //   return;
+          // }
+          // return response;
+          const { feed, posts, isValid } = parseRssContent(response.data.contents);
+          if (!isValid) {
             watchedState.rssForm.feedback = i18nInstance.t('errors.withoutRss');
             // console.log(watchedState.rssForm.feedback);
             watchedState.rssForm.status = 'failed';
             return;
           }
-          // return response;
-          const { feed, posts } = parseRssContent(response.data.contents);
           watchedState.rssForm.feedback = i18nInstance.t('success');
           watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
           watchedState.feeds.links.push(rssLink);
