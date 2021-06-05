@@ -201,7 +201,7 @@ export default () => {
       watchedState.rssForm.status = 'loading';
       axios.get(urlWithoutCorsProblem)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           // console.log(response.data.status.content_type);
           // const error = isRssIncluded(response);
           // console.log(isRssIncluded(response));

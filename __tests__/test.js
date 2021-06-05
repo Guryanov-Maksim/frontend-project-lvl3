@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { screen, waitFor, getByText } from '@testing-library/dom';
+import { screen, waitFor } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
 import fs from 'fs';
@@ -69,18 +69,18 @@ beforeEach(() => {
 
   elements.submit = screen.getByLabelText('add');
   elements.input = screen.getByLabelText('url');
-  elements.feedback = document.querySelector('.feedback');
-  elements.feeds = document.querySelector('.feeds');
-  elements.posts = document.querySelector('.posts');
+  elements.feedback = screen.getByTestId('feedback');
+  // elements.feeds = document.querySelector('.feeds');
+  // elements.posts = document.querySelector('.posts');
 });
 
 test.each([
   [' ', 'Не должно быть пустым'],
   ['wrongUrl.wrong', 'Ссылка должна быть валидным URL'],
-])('validation: url = \'%s\', feedback message = \'%s\'', (url, expecterFeedback) => {
+])('validation: url = \'%s\', feedback message = \'%s\'', (url, expectedFeedback) => {
   userEvent.type(elements.input, url);
   userEvent.click(elements.submit);
-  expect(elements.feedback).toHaveTextContent(expecterFeedback);
+  expect(screen.getByText(expectedFeedback)).toBeInTheDocument();
 });
 
 test('form is disabled while submitting', async () => {
@@ -95,14 +95,14 @@ test('form is disabled while submitting', async () => {
     .get('/get?url=http%3A%2F%2Flocalhost.com%2Ffeed&disableCache=true')
     .reply(200);
 
-  expect(elements.submit).not.toBeDisabled();
-  expect(elements.input).not.toBeDisabled();
+  expect(elements.submit).toBeEnabled();
+  expect(elements.input).not.toHaveAttribute('readonly');
   userEvent.click(elements.submit);
   expect(elements.submit).toBeDisabled();
   expect(elements.input).toHaveAttribute('readonly');
 
   await waitFor(() => {
-    expect(elements.submit).not.toBeDisabled();
+    expect(elements.submit).toBeEnabled();
     expect(elements.input).not.toHaveAttribute('readonly');
   });
 
@@ -126,11 +126,14 @@ test('add feeds and posts', async () => {
   await waitFor(() => {
     expect(screen.getByText('Фиды')).toBeInTheDocument();
     expect(screen.getByText('Посты')).toBeInTheDocument();
-    const feedItems = elements.feeds.querySelectorAll('li');
+    // const feedItems = elements.feeds.querySelectorAll('li');
+    const feedItems = screen.getAllByTestId('feed');
+    // console.log(feedsd.length);
     expect(feedItems).toHaveLength(1);
+    // expect(feedItems).toHaveLength(1);
     expect(screen.getByText(feeds.feed1.header)).toBeInTheDocument();
     expect(screen.getByText(feeds.feed1.description)).toBeInTheDocument();
-    const postItems = elements.posts.querySelectorAll('li');
+    const postItems = screen.getAllByTestId('post');
     expect(postItems).toHaveLength(2);
     const link1 = screen.getByText(posts.post1.header);
     expect(link1).toBeInTheDocument();
@@ -151,10 +154,11 @@ test('add feeds and posts', async () => {
     .reply(200, response2);
 
   await waitFor(() => {
-    const postItems = elements.posts.querySelectorAll('li');
+    const postItems = screen.getAllByTestId('post');
     expect(postItems).toHaveLength(3);
-    const newestPostElement = elements.posts.querySelector('li');
-    const link = getByText(newestPostElement, posts.post3.header);
+    // const newestPostElement = elements.posts.querySelector('li');
+    // const link = getByText(newestPostElement, posts.post3.header);
+    const link = screen.getByText(posts.post3.header);
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('href', posts.post3.link);
   }, { timeout: 6000 });
@@ -174,11 +178,11 @@ test('add feeds and posts', async () => {
   userEvent.click(elements.submit);
 
   await waitFor(() => {
-    const feedItems = elements.feeds.querySelectorAll('li');
+    const feedItems = screen.getAllByTestId('feed');
     expect(feedItems).toHaveLength(2);
     expect(screen.getByText(feeds.feed2.header)).toBeInTheDocument();
     expect(screen.getByText(feeds.feed2.description)).toBeInTheDocument();
-    const postItems = elements.posts.querySelectorAll('li');
+    const postItems = screen.getAllByTestId('post');
     expect(postItems).toHaveLength(4);
     const link = screen.getByText(posts.post4.header);
     expect(link).toBeInTheDocument();
