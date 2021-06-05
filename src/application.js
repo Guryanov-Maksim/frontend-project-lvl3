@@ -260,7 +260,7 @@ export default () => {
             });
           })
           .catch((error) => {
-            console.log(error);
+            throw error;
           })
           .finally(() => watchRssFeed(links));
       }, timeout);
