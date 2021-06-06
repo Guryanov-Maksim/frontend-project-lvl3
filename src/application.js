@@ -87,6 +87,7 @@ export default (state, i18nInstance) => {
     modalTitle: document.querySelector('.modal-title'),
     modalBody: document.querySelector('.modal-body'),
     modalDetails: document.querySelector('[data-details]'),
+    closeButtons: document.querySelectorAll('[data-bs-dismiss="modal"]'),
   };
 
   const input = document.querySelector('[data-url]');
@@ -94,7 +95,20 @@ export default (state, i18nInstance) => {
 
   input.focus();
 
-  const watchedState = initView(state, elements, i18nInstance);
+  const { watchedState, watchedUiState } = initView(state, elements, i18nInstance);
+
+  const handleModalClearing = (event, rightTarget) => {
+    if (event.target !== rightTarget) {
+      return;
+    }
+    watchedUiState.activePost = null;
+  };
+
+  elements.modal.addEventListener('click', (event) => handleModalClearing(event, elements.modal));
+
+  elements.closeButtons.forEach((button) => {
+    button.addEventListener('click', (event) => handleModalClearing(event, button));
+  });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
