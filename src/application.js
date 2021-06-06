@@ -12,7 +12,12 @@ const validateUrl = (url) => {
       url: 'invalidUrl',
     },
   });
-  const schema = yup.string().trim().url().required();
+  const schema = yup
+    .string()
+    .trim()
+    .url()
+    .required();
+
   try {
     schema.validateSync(url);
     return null;
@@ -52,7 +57,6 @@ const handleError = (state, error, i18nInstance) => {
 };
 
 const watchRssFeed = (watchedState) => {
-  // console.log(watchedState);
   const { links } = watchedState.feeds;
   const timeout = 5000;
   setTimeout(() => {
@@ -62,9 +66,9 @@ const watchRssFeed = (watchedState) => {
       return axios.get(urlWithoutCorsProblem);
     });
     Promise.all(promises)
-      .then((response) => {
-        response.forEach((xml) => {
-          const { feed, posts } = parseRssContent(xml.data.contents);
+      .then((responses) => {
+        responses.forEach((response) => {
+          const { feed, posts } = parseRssContent(response.data.contents);
           const newPosts = getNewPosts(posts, watchedState, feed);
           watchedState.posts = [...newPosts, ...watchedState.posts];
         });
@@ -88,12 +92,11 @@ export default (state, i18nInstance) => {
     modalBody: document.querySelector('.modal-body'),
     modalDetails: document.querySelector('[data-details]'),
     closeButtons: document.querySelectorAll('[data-bs-dismiss="modal"]'),
+    form: document.querySelector('.rss-form'),
   };
 
-  const input = document.querySelector('[data-url]');
-  const form = document.querySelector('.rss-form');
+  elements.input.focus();
 
-  input.focus();
   const { watchedState, watchedUiState } = initView(state, elements, i18nInstance);
 
   const handleModalClearing = (event, rightTarget) => {
@@ -109,7 +112,7 @@ export default (state, i18nInstance) => {
     button.addEventListener('click', (event) => handleModalClearing(event, button));
   });
 
-  form.addEventListener('submit', (e) => {
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -146,7 +149,7 @@ export default (state, i18nInstance) => {
         const { feed, posts, isValid } = parseRssContent(response.data.contents);
         if (!isValid) {
           watchedState.rssForm.feedback = i18nInstance.t('errors.withoutRss');
-          watchedState.rssForm.status = 'failed';
+          watchedState.rssForm.status = 'filling';
           return;
         }
         watchedState.rssForm.feedback = i18nInstance.t('success');
@@ -154,12 +157,12 @@ export default (state, i18nInstance) => {
         watchedState.feeds.links.push(rssLink);
         watchedState.posts = [...posts, ...watchedState.posts];
         watchedState.rssForm.status = 'filling';
-        form.reset();
-        input.focus();
+        elements.form.reset();
+        elements.input.focus();
       })
       .catch(() => {
         watchedState.rssForm.feedback = i18nInstance.t('errors.network');
-        watchedState.rssForm.status = 'failed';
+        watchedState.rssForm.status = 'filling';
       });
   });
 

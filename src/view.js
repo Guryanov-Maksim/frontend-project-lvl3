@@ -11,8 +11,7 @@ const renderForm = (state, elements) => {
       elements.addButton.setAttribute('disabled', true);
       elements.input.setAttribute('readonly', true);
       break;
-    case 'filling':
-    case 'failed': {
+    case 'filling': {
       elements.addButton.removeAttribute('disabled');
       elements.input.removeAttribute('readonly');
       break;
@@ -36,14 +35,28 @@ const renderFeedback = (feedback, container) => {
 };
 
 const renderFeeds = (feeds, container, i18nInstance) => {
-  const li = feeds.map((feed) => (
-    `<li data-testid="feed">
-      <h3>${feed.title}</h3>
-      <p>${feed.description}</p>
-    </li>`
-  ));
-  const header = i18nInstance.t('feeds.header');
-  container.innerHTML = `<h2>${header}</h2><ul>${li.join('')}</ul>`;
+  const listElements = feeds.map((feed) => {
+    const header = document.createElement('h3');
+    header.textContent = feed.title;
+
+    const p = document.createElement('p');
+    p.textContent = feed.description;
+
+    const li = document.createElement('li');
+    li.setAttribute('data-testid', 'feed');
+    li.append(header);
+    li.append(p);
+    return li;
+  });
+  const header = document.createElement('h2');
+  header.textContent = i18nInstance.t('feeds.header');
+  const ul = document.createElement('ul');
+  listElements.forEach((li) => {
+    ul.append(li);
+  });
+  container.innerHTML = '';
+  container.append(header);
+  container.append(ul);
 };
 
 const renderModal = (uiState, elements) => {
@@ -59,23 +72,14 @@ const renderModal = (uiState, elements) => {
 };
 
 const renderPostLink = (uiState, elements) => {
-  // uiState.visitedPostId.forEach((id) => {
-  //   const link = elements.postsContainer.querySelector(`[data-id="${id}"]`);
-  //   link.classList.remove('fw-bold', 'font-weight-bold');
-  //   link.classList.add('fw-normal', 'font-weight-normal');
-  // });
   if (uiState.activePost === null) {
     return;
   }
   const link = elements.postsContainer.querySelector(`[data-id="${uiState.activePost.id}"]`);
-  link.classList.remove('fw-bold', 'font-weight-bold');
-  link.classList.add('fw-normal', 'font-weight-normal');
-  // const modalBackdrop = document.querySelector('.modal-backdrop');
-  // console.log(modalBackdrop);
-  // modalBackdrop.addEventListener('click', () => {
-  //   console.log(modalBackdrop);
-  //   uiState.activePost = null;
-  // }, true);
+  // link.classList.remove('fw-bold', 'font-weight-bold');
+  // link.classList.add('fw-normal', 'font-weight-normal');
+  link.classList.remove('fw-bold');
+  link.classList.add('fw-normal');
 };
 
 const handlePostWatch = (uiState, post) => {
@@ -88,53 +92,51 @@ const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
   elements.postsContainer.innerHTML = `<h2>${header}</h2>`;
   const ul = document.createElement('ul');
   state.posts.forEach((post) => {
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <a class="fw-bold font-weight-bold" href=${post.link} target="_blank" data-id="${post.id}" data-testid="post">${post.title}</a>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Просмотр
-      </button>`;
-    const seeLink = li.querySelector('[data-id]');
-    const button = li.querySelector('[data-bs-toggle="modal"]');
-
+    const link = document.createElement('a');
+    const linkAttributes = [
+      ['href', post.link],
+      ['target', '_black'],
+      ['data-id', post.id],
+      ['data-testid', 'post'],
+    ];
+    linkAttributes.forEach(([attribute, value]) => {
+      link.setAttribute(attribute, value);
+    });
+    link.classList.add('fw-bold');
     if (state.uiState.visitedPostId.includes(post.id)) {
-      seeLink.classList.remove('fw-bold', 'font-weight-bold');
-      seeLink.classList.add('fw-normal', 'font-weight-normal');
+      link.classList.remove('fw-bold');
+      link.classList.add('fw-normal');
     }
+    link.textContent = post.title;
+    link.addEventListener('click', () => handlePostWatch(watchedUiState, post));
 
-    // li.addEventListener('click', () => {
-    //   elements.modalTitle.textContent = post.title;
-    //   elements.modalBody.textContent = post.description;
-    //   elements.modalDetails.setAttribute('href', post.link);
-    //   seeLink.classList.remove('fw-bold', 'font-weight-bold');
-    //   seeLink.classList.add('fw-normal', 'font-weight-normal');
-    //   state.uiState.visitedPostId.push(post.id);
-    // });
-
+    const button = document.createElement('button');
+    button.classList.add('btn', 'btn-primary');
+    button.setAttribute('data-bs-toggle', 'modal');
+    button.setAttribute('data-bs-target', '#exampleModal');
+    button.textContent = 'Просмотр';
     button.addEventListener('click', () => handlePostWatch(watchedUiState, post));
-    seeLink.addEventListener('click', () => handlePostWatch(watchedUiState, post));
-    // li.addEventListener('click', () => handlePostWatch(watchedUiState, post));
 
-    // renderModal();
+    const li = document.createElement('li');
+    li.append(link);
+    li.append(button);
 
-    ul.appendChild(li);
+    ul.append(li);
   });
-  elements.postsContainer.appendChild(ul);
+  elements.postsContainer.append(ul);
 };
 
 const initView = (state, elements, i18nInstance) => {
-  const { uiState } = state;
-  const watchedUiState = onChange(uiState, (path) => {
-    switch (path) {
-      case 'activePost':
-        renderModal(uiState, elements);
-        renderPostLink(uiState, elements);
-        break;
-      case 'visitedPostId':
-        // renderPostLink(uiState, elements);
-        break;
-      default:
-        throw new Error(`non supported path: ${path}`);
+  const uiMapping = {
+    activePost: (uiState) => {
+      renderModal(uiState, elements);
+      renderPostLink(uiState, elements);
+    },
+  };
+
+  const watchedUiState = onChange(state.uiState, (path) => {
+    if (uiMapping[path]) {
+      uiMapping[path](state.uiState);
     }
   });
 
