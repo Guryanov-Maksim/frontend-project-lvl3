@@ -94,7 +94,6 @@ export default (state, i18nInstance) => {
   const form = document.querySelector('.rss-form');
 
   input.focus();
-  console.log(state);
   const { watchedState, watchedUiState } = initView(state, elements, i18nInstance);
 
   const handleModalClearing = (event, rightTarget) => {

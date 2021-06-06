@@ -47,7 +47,6 @@ const renderFeeds = (feeds, container, i18nInstance) => {
 };
 
 const renderModal = (uiState, elements) => {
-  console.log(uiState.activePost);
   if (uiState.activePost === null) {
     elements.modalTitle.textContent = '';
     elements.modalBody.textContent = '';
@@ -128,7 +127,6 @@ const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
 };
 
 const initView = (state, elements, i18nInstance) => {
-  console.log(state);
   const { uiState } = state;
   const watchedUiState = onChange(uiState, (path) => {
     switch (path) {
