@@ -70,7 +70,7 @@ beforeEach(() => {
   elements.submit = screen.getByLabelText('add');
   elements.input = screen.getByLabelText('url');
   elements.feedback = screen.getByTestId('feedback');
-  // elements.feeds = document.querySelector('.feeds');
+  elements.feed = document.querySelector('.feeds');
   // elements.posts = document.querySelector('.posts');
 });
 
@@ -242,6 +242,28 @@ test('should not add feed twice', async () => {
   userEvent.type(elements.input, 'http://localhost.com/feed');
   userEvent.click(elements.submit);
   await waitFor(() => {
+    scope.done();
+  });
+  userEvent.type(elements.input, 'http://localhost.com/feed');
+  userEvent.click(elements.submit);
+  expect(elements.feedback).toHaveTextContent('RSS уже существует');
+});
+
+test('modal filling and clearing', async () => {
+  const scope = nock('https://hexlet-allorigins.herokuapp.com')
+    .defaultReplyHeaders({
+      'access-control-allow-origin': '*',
+      'access-control-allow-credentials': 'true',
+    })
+    .get('/get?url=http%3A%2F%2Flocalhost.com%2Ffeed&disableCache=true')
+    .reply(200, response);
+
+  userEvent.type(elements.input, 'http://localhost.com/feed');
+  userEvent.click(elements.submit);
+  await waitFor(() => {
+    const postLink = screen.getByText(posts.post1.header);
+    userEvent.click(postLink);
+    // screen.getByText()
     scope.done();
   });
   userEvent.type(elements.input, 'http://localhost.com/feed');
