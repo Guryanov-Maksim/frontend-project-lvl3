@@ -32,7 +32,7 @@ export default () => {
         visitedPostId: [],
       },
     };
-
+    console.log(state);
     runApp(state, i18nInstance);
   });
 };
