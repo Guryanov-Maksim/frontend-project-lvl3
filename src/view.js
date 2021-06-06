@@ -128,6 +128,7 @@ const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
 };
 
 const initView = (state, elements, i18nInstance) => {
+  console.log(state);
   const { uiState } = state;
   const watchedUiState = onChange(uiState, (path) => {
     switch (path) {
