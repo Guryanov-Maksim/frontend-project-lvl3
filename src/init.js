@@ -30,6 +30,7 @@ export default () => {
       },
       uiState: {
         visitedPostId: [],
+        activePost: null,
       },
     };
     runApp(state, i18nInstance);
