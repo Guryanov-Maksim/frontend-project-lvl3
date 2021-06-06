@@ -70,7 +70,7 @@ beforeEach(() => {
   elements.submit = screen.getByLabelText('add');
   elements.input = screen.getByLabelText('url');
   elements.feedback = screen.getByTestId('feedback');
-  elements.feed = document.querySelector('.feeds');
+  // elements.feed = document.querySelector('.feeds');
   // elements.posts = document.querySelector('.posts');
 });
 
@@ -250,23 +250,25 @@ test('should not add feed twice', async () => {
 });
 
 test('modal filling and clearing', async () => {
-  const scope = nock('https://hexlet-allorigins.herokuapp.com')
+  nock('https://hexlet-allorigins.herokuapp.com')
     .defaultReplyHeaders({
       'access-control-allow-origin': '*',
       'access-control-allow-credentials': 'true',
     })
-    .get('/get?url=http%3A%2F%2Flocalhost.com%2Ffeed&disableCache=true')
-    .reply(200, response);
+    .get('/get?url=http%3A%2F%2Flocalhost.com%2Ffeed2&disableCache=true')
+    .reply(200, response3);
 
-  userEvent.type(elements.input, 'http://localhost.com/feed');
+  userEvent.type(elements.input, 'http://localhost.com/feed2');
   userEvent.click(elements.submit);
   await waitFor(() => {
-    // const postLink = screen.getByText(posts.post1.header);
-    // userEvent.click(postLink);
-    // screen.getByText()
-    scope.done();
+    // const postLink = screen.getByTestId('post');
+    userEvent.click(screen.getByTestId('post'));
+    expect(screen.getByTestId('modal-title')).toHaveTextContent(posts.post4.header);
+    expect(screen.getByTestId('modal-body')).toHaveTextContent(posts.post4.description);
+    expect(screen.getByTestId('modal-details')).toHaveAttribute('href', posts.post4.link);
   });
-  userEvent.type(elements.input, 'http://localhost.com/feed');
-  userEvent.click(elements.submit);
-  expect(elements.feedback).toHaveTextContent('RSS уже существует');
+  userEvent.click(screen.getByTestId('modal-close'));
+  expect(screen.getByTestId('modal-title')).toBeEmptyDOMElement();
+  expect(screen.getByTestId('modal-body')).toBeEmptyDOMElement();
+  expect(screen.getByTestId('modal-details')).toHaveAttribute('href', '#');
 });
