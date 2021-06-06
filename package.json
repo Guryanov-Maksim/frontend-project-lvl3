@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npx jest"
   },
-  "main": "src/application.js",
+  "main": "src/init.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Guryanov-Maksim/frontend-project-lvl3.git"
