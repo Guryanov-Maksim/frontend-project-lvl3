@@ -1,7 +1,7 @@
 {
   "contents": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Document</title>\n</head>\n\n<body>\n\n</body>\n\n</html>\n",
   "status": {
-      "url": "http://google.com",
+      "url": "http://localhost.com",
       "content_type": "text/html; charset=UTF-8",
       "content_length": 49227,
       "http_code": 200,
