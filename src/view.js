@@ -90,15 +90,11 @@ const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
   state.posts.forEach((post) => {
     const li = document.createElement('li');
     li.innerHTML = `
-      <a class="fw-bold font-weight-bold" href=${post.link} data-id="${post.id}" data-testid="post">${post.title}</a>
+      <a class="fw-bold font-weight-bold" href=${post.link} target="_blank" data-id="${post.id}" data-testid="post">${post.title}</a>
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Просмотр
       </button>`;
     const seeLink = li.querySelector('[data-id]');
-    seeLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.open(post.link, '_blank').focus();
-    });
     const button = li.querySelector('[data-bs-toggle="modal"]');
 
     if (state.uiState.visitedPostId.includes(post.id)) {
