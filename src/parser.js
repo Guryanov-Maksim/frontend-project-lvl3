@@ -1,11 +1,25 @@
 import _ from 'lodash';
 
+const getElementDetails = (dom) => {
+  const titleElement = dom.querySelector('title');
+  const title = titleElement.textContent;
+  const descriptionElement = dom.querySelector('description');
+  const description = descriptionElement.textContent;
+  const linkElement = dom.querySelector('link');
+  const link = linkElement.textContent;
+  const id = _.uniqueId();
+  return {
+    title,
+    description,
+    link,
+    id,
+  };
+};
+
 export default (content) => {
   const domparser = new DOMParser();
   const dom = domparser.parseFromString(content, 'application/xml');
-  // console.log(dom);
   const error = dom.querySelector('parsererror');
-  // console.log(error);
   if (error) {
     return {
       feed: null,
@@ -13,42 +27,25 @@ export default (content) => {
       isValid: false,
     };
   }
-  const feedTitleElement = dom.querySelector('title');
-  const feedTitle = feedTitleElement.textContent;
-  const feedDescriptionElement = dom.querySelector('description');
-  const feedDescription = feedDescriptionElement.textContent;
-  const feedPubDateElement = dom.querySelector('pubDate');
-  const pubDate = feedPubDateElement.textContent;
-  const feedLinkElement = dom.querySelector('link');
-  const feedLink = feedLinkElement.textContent;
-  const feedId = _.uniqueId();
+  const feedDetails = getElementDetails(dom);
+  const feedId = feedDetails.id;
   const postElements = dom.querySelectorAll('item');
   const posts = [...postElements].reduce((acc, postElement) => {
-    const postTitleElement = postElement.querySelector('title');
-    const title = postTitleElement.textContent;
-    const postLinkElement = postElement.querySelector('link');
-    const link = postLinkElement.textContent;
-    const postDescriptionElement = postElement.querySelector('description');
-    const description = postDescriptionElement.textContent;
-    const postPubDateElement = postElement.querySelector('pubDate');
-    const postPubDate = postPubDateElement.textContent;
-    const id = _.uniqueId();
+    const postDetails = getElementDetails(postElement);
     const post = {
-      title,
-      link,
-      description,
+      title: postDetails.title,
+      link: postDetails.link,
+      description: postDetails.description,
       feedId,
-      postPubDate,
-      id,
+      id: postDetails.id,
     };
     return [...acc, post];
   }, []);
   const feed = {
-    title: feedTitle,
-    description: feedDescription,
-    id: feedId,
-    pubDate,
-    link: feedLink,
+    title: feedDetails.title,
+    link: feedDetails.link,
+    description: feedDetails.description,
+    id: feedDetails.id,
   };
   return {
     feed,
