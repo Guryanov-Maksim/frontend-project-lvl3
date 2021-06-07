@@ -1,10 +1,5 @@
 import onChange from 'on-change';
 
-// to do:
-// 1. exclude xss violations
-// 3. понять как я запустил тесты (помог бабель?)
-// 4. Почему в тестах нужно добавлять 'access-control-allow-origin': '*',
-// 5. посмотреть обязателен ли pubDate в RSS
 const renderForm = (state, elements) => {
   switch (state.rssForm.status) {
     case 'loading':
