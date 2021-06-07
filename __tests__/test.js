@@ -10,25 +10,38 @@ jest.setTimeout(8000);
 
 const createPath = (fileName) => path.join('__fixtures__', fileName);
 
-const pathToFeedsAndPosts = createPath('feedsAndPosts.json');
-const { feeds, posts } = JSON.parse(fs.readFileSync(pathToFeedsAndPosts, 'utf-8'));
+const testFilesNames = [
+  'feedsAndPosts.json',
+  'index.html',
+  'response1.json',
+  'response2.json',
+  'response3.json',
+  'response4.json',
+];
 
-const pathToIndex = createPath('index.html');
-const initialHtml = fs.readFileSync(pathToIndex, 'utf-8');
+const responsesForMocks = [
+  'feedsAndPosts',
+  'initialHtml',
+  'feedWithTwoPosts',
+  'feedWithOneNewPost',
+  'newFeedWithOnePost',
+  'responseWithoutRss',
+];
 
-const pathToResponse1 = createPath('response1.json');
-const feedWithTwoPosts = fs.readFileSync(pathToResponse1, 'utf-8');
-
-const pathToResponse2 = createPath('response2.json');
-const feedWithOneNewPost = fs.readFileSync(pathToResponse2, 'utf-8');
-
-const pathToResponse3 = createPath('response3.json');
-const newFeedWithOnePost = fs.readFileSync(pathToResponse3, 'utf-8');
-
-const pathToResponse4 = createPath('response4.json');
-const responseWithoutRss = fs.readFileSync(pathToResponse4, 'utf-8');
-
+const testData = {};
 const elements = {};
+
+const getTestData = async (fileNames) => {
+  const promises = fileNames.map((fileName) => {
+    const pathToFile = createPath(fileName);
+    return fs.promises.readFile(pathToFile, 'utf-8');
+  });
+  const testFilesData = await Promise.all(promises);
+  const testDataEntries = responsesForMocks.map((response, index) => (
+    [response, testFilesData[index]]
+  ));
+  return testDataEntries;
+};
 
 const avoidCorsProblem = (url) => (
   `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`
@@ -46,12 +59,16 @@ const createHttpMock = (url, response = '') => {
   return scope;
 };
 
-beforeAll(() => {
+beforeAll(async () => {
   nock.disableNetConnect();
+  const testDataEntries = await getTestData(testFilesNames);
+  testDataEntries.forEach(([dataName, testFileData]) => {
+    testData[dataName] = testFileData;
+  });
 });
 
 beforeEach(() => {
-  document.body.innerHTML = initialHtml;
+  document.body.innerHTML = testData.initialHtml;
 
   init();
 
@@ -90,8 +107,10 @@ test('form is disabled while submitting', async () => {
 });
 
 test('add feeds and posts', async () => {
+  const { feeds, posts } = JSON.parse(testData.feedsAndPosts);
+
   const url = 'http://localhost.com/feed';
-  const scope = createHttpMock(url, feedWithTwoPosts);
+  const scope = createHttpMock(url, testData.feedWithTwoPosts);
 
   userEvent.type(elements.input, url);
   userEvent.click(elements.submit);
@@ -113,7 +132,7 @@ test('add feeds and posts', async () => {
 
   scope.done();
 
-  const scope2 = createHttpMock(url, feedWithOneNewPost);
+  const scope2 = createHttpMock(url, testData.feedWithOneNewPost);
 
   await waitFor(() => {
     const postItems = screen.getAllByTestId('post');
@@ -126,7 +145,7 @@ test('add feeds and posts', async () => {
   scope2.done();
 
   const newFeedUrl = 'http://localhost.com/feed2';
-  const scope3 = createHttpMock(newFeedUrl, newFeedWithOnePost);
+  const scope3 = createHttpMock(newFeedUrl, testData.newFeedWithOnePost);
 
   userEvent.type(elements.input, newFeedUrl);
   userEvent.click(elements.submit);
@@ -148,7 +167,7 @@ test('add feeds and posts', async () => {
 
 test('should not add feed without rss', async () => {
   const url = 'http://localhost.com/feed;';
-  createHttpMock(url, responseWithoutRss);
+  createHttpMock(url, testData.responseWithoutRss);
 
   userEvent.type(elements.input, url);
   userEvent.click(elements.submit);
@@ -159,7 +178,7 @@ test('should not add feed without rss', async () => {
 
 test('should not add feed twice', async () => {
   const url = 'http://localhost.com/feed;';
-  const scope = createHttpMock(url, feedWithTwoPosts);
+  const scope = createHttpMock(url, testData.feedWithTwoPosts);
 
   userEvent.type(elements.input, url);
   userEvent.click(elements.submit);
@@ -171,9 +190,11 @@ test('should not add feed twice', async () => {
   expect(elements.feedback).toHaveTextContent('RSS уже существует');
 });
 
-test('modal filling and clearing', async () => {
+test('modal opening and closing', async () => {
+  const { posts } = JSON.parse(testData.feedsAndPosts);
+
   const url = 'http://localhost.com/feed;';
-  createHttpMock(url, newFeedWithOnePost);
+  createHttpMock(url, testData.newFeedWithOnePost);
 
   userEvent.type(elements.input, url);
   userEvent.click(elements.submit);
