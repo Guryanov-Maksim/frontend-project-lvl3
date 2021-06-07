@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import resources from './locales';
-import runApp from './application.js';
+import addAndWatchFeeds from './application.js';
 
 export default () => {
   const defaultLanguage = 'ru';
@@ -33,6 +33,6 @@ export default () => {
         activePost: null,
       },
     };
-    runApp(state, i18nInstance);
+    addAndWatchFeeds(state, i18nInstance);
   });
 };
