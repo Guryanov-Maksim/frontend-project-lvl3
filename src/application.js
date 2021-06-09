@@ -121,6 +121,7 @@ export default (state, i18nInstance) => {
     const error = validateUrl(rssLink);
     if (error) {
       handleError(watchedState, error, i18nInstance);
+      watchedState.rssForm.status = 'failed';
       return;
     }
 
@@ -131,6 +132,7 @@ export default (state, i18nInstance) => {
         error: attachedFeedError,
         valid: false,
       };
+      watchedState.rssForm.status = 'failed';
       return;
     }
 
@@ -149,7 +151,7 @@ export default (state, i18nInstance) => {
         const { feed, posts, isValid } = parseRssContent(response.data.contents);
         if (!isValid) {
           watchedState.rssForm.feedback = i18nInstance.t('errors.withoutRss');
-          watchedState.rssForm.status = 'filling';
+          watchedState.rssForm.status = 'failed';
           return;
         }
         watchedState.rssForm.feedback = i18nInstance.t('success');
@@ -162,7 +164,7 @@ export default (state, i18nInstance) => {
       })
       .catch(() => {
         watchedState.rssForm.feedback = i18nInstance.t('errors.network');
-        watchedState.rssForm.status = 'filling';
+        watchedState.rssForm.status = 'failed';
       });
   });
 

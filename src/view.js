@@ -6,11 +6,18 @@ const renderForm = (state, elements) => {
       elements.addButton.setAttribute('disabled', true);
       elements.input.setAttribute('readonly', true);
       break;
-    case 'filling': {
+    case 'filling':
+      elements.addButton.removeAttribute('disabled');
+      elements.input.removeAttribute('readonly');
+      elements.feedback.classList.remove('text-danger');
+      elements.feedback.classList.add('text-success');
+      break;
+    case 'failed':
+      elements.feedback.classList.add('text-danger');
+      elements.feedback.classList.remove('text-success');
       elements.addButton.removeAttribute('disabled');
       elements.input.removeAttribute('readonly');
       break;
-    }
     default: {
       throw new Error(`Unsupported status: ${state.rssForm.status}`);
     }
