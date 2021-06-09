@@ -1,39 +1,63 @@
 <!doctype html>
 <html>
-  <head>
-    <title>RSS aggregator</title>
-  </head>
-  <body>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel"></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            ...
-          </div>
-          <div class="modal-footer">
-            <a class="btn btn-primary" target="_blank" href="#" data-details>Читать полностью</a>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+  <title>RSS aggregator</title>
+</head>
+<body>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-primary" target="_blank" href="#" data-details>Читать полностью</a>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
-    <section>
-      <h1>RSS агрегатор</h1>
-      <p class="lead">Начните читать RSS сегодня! Это легко, это красиво.</p>
-      <form class="rss-form">
-        <input name="rss-url" data-url = "url" placeholder="ссылка RSS" aria-label="url">
-        <button id="feed-submit" type="submit" aria-label="add">Add</button>
-      </form>
-      <p class="text-muted my-1">Пример: https://ru.hexlet.io/lessons.rss</p>
-      <div class="feedback"></div>
+  </div>
+  <div class="flex-grow-1">
+    <section class="container-fluid bg-dark p-5">
+      <div class="row">
+        <div class="col-md-10 col-lg-8 mx-auto text-white">
+          <h1 class="display-3 mb-0">RSS агрегатор</h1>
+          <p class="lead">Начните читать RSS сегодня! Это легко, это красиво.</p>
+          <form class="rss-form text-body">
+            <div class="row">
+              <div class="col">
+                <div class="form-floating">
+                  <input class="form-control w-100" id="url-input" name="rss-url" data-url="url"
+                    placeholder="ссылка RSS" aria-label="url">
+                  <label for="url-input">Ссылка RSS</label>
+                </div>
+              </div>
+              <div class="col-auto">
+                <button class="h-100 btn btn-lg btn-primary px-sm-5" id="feed-submit" type="submit"
+                  aria-label="add">Добавить</button>
+              </div>
+            </div>
+          </form>
+          <p class="mt-2 mb-0 text-muted">Пример: https://ru.hexlet.io/lessons.rss</p>
+          <div class="feedback m-0 position-absolute small text-danger"></div>
+        </div>
+      </div>
     </section>
-    <section>
-      <div class="feeds"></div>
-      <div class="posts"></div>
+    <section class="container-fluid container-xxl p-5">
+      <div class="row">
+        <div class="col">
+          <div class="col-md-10 col-lg-8 mx-auto order-0 order-lg-1 feeds"></div>
+          <div class="col-md-10 col-lg-8 order-1 mx-auto posts"></div>
+        </div>
+      </div>
     </section>
-  </body>
+  </div>
+</body>
+
 </html>

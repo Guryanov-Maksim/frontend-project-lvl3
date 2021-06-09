@@ -32,12 +32,15 @@ const renderFeedback = (feedback, container) => {
 const renderFeeds = (feeds, container, i18nInstance) => {
   const listElements = feeds.map((feed) => {
     const header = document.createElement('h3');
+    header.classList.add('h6', 'm-0');
     header.textContent = feed.title;
 
     const p = document.createElement('p');
+    p.classList.add('m-0', 'small', 'text-black-50');
     p.textContent = feed.description;
 
     const li = document.createElement('li');
+    li.classList.add('list-group-item', 'border-0', 'border-end-0');
     li.setAttribute('data-testid', 'feed');
     li.append(header);
     li.append(p);
@@ -46,6 +49,7 @@ const renderFeeds = (feeds, container, i18nInstance) => {
   const header = document.createElement('h2');
   header.textContent = i18nInstance.t('feeds.header');
   const ul = document.createElement('ul');
+  ul.classList.add('list-group-item', 'border-0', 'border-end-0');
   listElements.forEach((li) => {
     ul.append(li);
   });
@@ -86,6 +90,7 @@ const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
   const header = i18nInstance.t('posts.header');
   elements.postsContainer.innerHTML = `<h2>${header}</h2>`;
   const ul = document.createElement('ul');
+  ul.classList.add('list-group', 'border-0', 'rounded-0');
   state.posts.forEach((post) => {
     const link = document.createElement('a');
     const linkAttributes = [
@@ -106,13 +111,14 @@ const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
     link.addEventListener('click', () => handlePostWatch(watchedUiState, post));
 
     const button = document.createElement('button');
-    button.classList.add('btn', 'btn-primary');
+    button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#exampleModal');
     button.textContent = 'Просмотр';
     button.addEventListener('click', () => handlePostWatch(watchedUiState, post));
 
     const li = document.createElement('li');
+    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     li.append(link);
     li.append(button);
 
