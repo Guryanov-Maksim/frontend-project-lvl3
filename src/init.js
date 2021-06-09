@@ -11,7 +11,6 @@ export default () => {
     resources,
   }).then(() => {
     const state = {
-      // error: null,
       feeds: {
         links: [],
         contents: [],
@@ -21,8 +20,6 @@ export default () => {
         fields: {
           url: {
             valid: true,
-            // error: null,
-            // value: '',
           },
         },
         feedback: '',

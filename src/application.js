@@ -129,7 +129,6 @@ export default (state, i18nInstance) => {
     if (attachedFeedError) {
       watchedState.rssForm.feedback = i18nInstance.t(`errors.${attachedFeedError}`);
       watchedState.rssForm.fields.url = {
-        // error: attachedFeedError,
         valid: false,
       };
       watchedState.rssForm.status = 'failed';
@@ -140,11 +139,8 @@ export default (state, i18nInstance) => {
     urlWithoutCorsProblem.searchParams.append('disableCache', 'true');
 
     watchedState.rssForm.fields.url = {
-      // error: null,
       valid: true,
-      // value: rssLink,
     };
-    // watchedState.error = null;
     watchedState.rssForm.status = 'loading';
     axios.get(urlWithoutCorsProblem)
       .then((response) => {
