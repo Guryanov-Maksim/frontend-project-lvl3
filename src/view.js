@@ -82,8 +82,6 @@ const renderPostLink = (uiState, elements) => {
     return;
   }
   const link = elements.postsContainer.querySelector(`[data-id="${uiState.activePost.id}"]`);
-  // link.classList.remove('fw-bold', 'font-weight-bold');
-  // link.classList.add('fw-normal', 'font-weight-normal');
   link.classList.remove('fw-bold');
   link.classList.add('fw-normal');
 };

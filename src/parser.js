@@ -22,8 +22,8 @@ export default (content) => {
   const error = dom.querySelector('parsererror');
   if (error) {
     return {
-      feed: null,
-      posts: null,
+      feed: [],
+      posts: [],
       isValid: false,
     };
   }
