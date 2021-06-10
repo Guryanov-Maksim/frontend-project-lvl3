@@ -10,35 +10,26 @@ jest.setTimeout(8000);
 
 const createPath = (fileName) => path.join('__fixtures__', fileName);
 
-const testFilesNames = [
-  'feedsAndPosts.json',
-  'index.html',
-  'response1.json',
-  'response2.json',
-  'response3.json',
-  'response4.json',
-];
-
-const responsesForMocks = [
-  'feedsAndPosts',
-  'initialHtml',
-  'feedWithTwoPosts',
-  'feedWithOneNewPost',
-  'newFeedWithOnePost',
-  'responseWithoutRss',
-];
+const responsesForMocks = {
+  feedsAndPosts: 'feedsAndPosts.json',
+  initialHtml: 'index.html',
+  feedWithTwoPosts: 'response1.json',
+  feedWithOneNewPost: 'response2.json',
+  newFeedWithOnePost: 'response3.json',
+  responseWithoutRss: 'response4.json',
+};
 
 const testData = {};
 const elements = {};
 
-const getTestData = async (fileNames) => {
-  const promises = fileNames.map((fileName) => {
+const getTestData = async (responses) => {
+  const promises = Object.values(responses).map((fileName) => {
     const pathToFile = createPath(fileName);
     return fs.promises.readFile(pathToFile, 'utf-8');
   });
   const testFilesData = await Promise.all(promises);
-  const testDataEntries = responsesForMocks.map((response, index) => (
-    [response, testFilesData[index]]
+  const testDataEntries = Object.keys(responses).map((responseName, index) => (
+    [responseName, testFilesData[index]]
   ));
   return testDataEntries;
 };
@@ -61,7 +52,7 @@ const createHttpMock = (url, response = '') => {
 
 beforeAll(async () => {
   nock.disableNetConnect();
-  const testDataEntries = await getTestData(testFilesNames);
+  const testDataEntries = await getTestData(responsesForMocks);
   testDataEntries.forEach(([dataName, testFileData]) => {
     testData[dataName] = testFileData;
   });
