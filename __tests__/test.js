@@ -98,7 +98,7 @@ test('form is disabled while submitting', async () => {
 });
 
 test('add feeds and posts', async () => {
-  const { feeds, posts } = JSON.parse(testData.feedsAndPosts);
+  const { feed1, feed2 } = JSON.parse(testData.feedsAndPosts);
 
   const url = 'http://localhost.com/feed';
   const scope = createHttpMock(url, testData.feedWithTwoPosts);
@@ -109,16 +109,16 @@ test('add feeds and posts', async () => {
   await waitFor(() => {
     expect(screen.getByText('Фиды')).toBeInTheDocument();
     expect(screen.getByText('Посты')).toBeInTheDocument();
-    expect(screen.getByText(feeds.feed1.header)).toBeInTheDocument();
-    expect(screen.getByText(feeds.feed1.description)).toBeInTheDocument();
+    expect(screen.getByText(feed1.header)).toBeInTheDocument();
+    expect(screen.getByText(feed1.description)).toBeInTheDocument();
     const postItems = screen.getAllByTestId('post');
     expect(postItems).toHaveLength(2);
-    const link1 = screen.getByText(posts.post1.header);
+    const link1 = screen.getByText(feed1.post1.header);
     expect(link1).toBeInTheDocument();
-    expect(link1).toHaveAttribute('href', posts.post1.link);
-    const link2 = screen.getByText(posts.post2.header);
+    expect(link1).toHaveAttribute('href', feed1.post1.link);
+    const link2 = screen.getByText(feed1.post2.header);
     expect(link2).toBeInTheDocument();
-    expect(link2).toHaveAttribute('href', posts.post2.link);
+    expect(link2).toHaveAttribute('href', feed1.post2.link);
   });
 
   scope.done();
@@ -128,9 +128,9 @@ test('add feeds and posts', async () => {
   await waitFor(() => {
     const postItems = screen.getAllByTestId('post');
     expect(postItems).toHaveLength(3);
-    const link = screen.getByText(posts.post3.header);
+    const link = screen.getByText(feed1.post3.header);
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', posts.post3.link);
+    expect(link).toHaveAttribute('href', feed1.post3.link);
   }, { timeout: 6000 });
 
   scope2.done();
@@ -144,13 +144,13 @@ test('add feeds and posts', async () => {
   await waitFor(() => {
     const feedItems = screen.getAllByTestId('feed');
     expect(feedItems).toHaveLength(2);
-    expect(screen.getByText(feeds.feed2.header)).toBeInTheDocument();
-    expect(screen.getByText(feeds.feed2.description)).toBeInTheDocument();
+    expect(screen.getByText(feed2.header)).toBeInTheDocument();
+    expect(screen.getByText(feed2.description)).toBeInTheDocument();
     const postItems = screen.getAllByTestId('post');
     expect(postItems).toHaveLength(4);
-    const link = screen.getByText(posts.post4.header);
+    const link = screen.getByText(feed2.post1.header);
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', posts.post4.link);
+    expect(link).toHaveAttribute('href', feed2.post1.link);
   });
 
   scope3.done();
@@ -182,7 +182,7 @@ test('should not add feed twice', async () => {
 });
 
 test('modal opening and closing', async () => {
-  const { posts } = JSON.parse(testData.feedsAndPosts);
+  const { feed2 } = JSON.parse(testData.feedsAndPosts);
 
   const url = 'http://localhost.com/feed;';
   createHttpMock(url, testData.newFeedWithOnePost);
@@ -191,9 +191,9 @@ test('modal opening and closing', async () => {
   userEvent.click(elements.submit);
   await waitFor(() => {
     userEvent.click(screen.getByTestId('post'));
-    expect(screen.getByTestId('modal-title')).toHaveTextContent(posts.post4.header);
-    expect(screen.getByTestId('modal-body')).toHaveTextContent(posts.post4.description);
-    expect(screen.getByTestId('modal-details')).toHaveAttribute('href', posts.post4.link);
+    expect(screen.getByTestId('modal-title')).toHaveTextContent(feed2.post1.header);
+    expect(screen.getByTestId('modal-body')).toHaveTextContent(feed2.post1.description);
+    expect(screen.getByTestId('modal-details')).toHaveAttribute('href', feed2.post1.link);
   });
   userEvent.click(screen.getByTestId('modal-close'));
   expect(screen.getByTestId('modal-title')).toBeEmptyDOMElement();

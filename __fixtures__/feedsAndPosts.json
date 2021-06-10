@@ -1,15 +1,7 @@
 {
-  "feeds":{
-    "feed1":{
-      "header":"Lorem ipsum feed for an interval of 1 minutes with 2 item(s)",
-      "description":"Feed 1 description"
-    },
-    "feed2":{
-      "header":"Lorem ipsum feed for an interval of 1 minutes with 1 item(s)",
-      "description":"Feed 2 description"
-    }
-  },
-  "posts":{
+  "feed1":{
+    "header":"Lorem ipsum feed for an interval of 1 minutes with 2 item(s)",
+    "description":"Feed 1 description",
     "post1":{
       "header":"Lorem ipsum 2021-06-04T10:14:00Z",
       "description":"Ad sunt mollit eu aliqua incididunt quis sit pariatur sint ut ullamco occaecat ullamco adipisicing.",
@@ -24,8 +16,12 @@
       "header":"Lorem ipsum 2021-06-04T10:16:00Z",
       "description":"Ea mollit voluptate labore amet culpa pariatur amet quis adipisicing qui consequat excepteur et.",
       "link":"http://example.com/test/1622801760"
-    },
-    "post4":{
+    }
+  },
+  "feed2":{
+    "header":"Lorem ipsum feed for an interval of 1 minutes with 1 item(s)",
+    "description":"Feed 2 description",
+    "post1":{
       "header":"Lorem ipsum 2021-06-04T10:18:00Z",
       "description":"Lorem irure excepteur irure consectetur sunt ad commodo nulla Lorem excepteur qui voluptate excepteur mollit.",
       "link":"http://example.com/test/1622801880"
