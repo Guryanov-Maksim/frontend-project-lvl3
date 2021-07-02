@@ -3,21 +3,22 @@ import * as yup from 'yup';
 import initView from './view.js';
 import parseRssContent from './parser.js';
 
-const validateUrl = (url) => {
-  yup.setLocale({
-    mixed: {
-      required: 'empty',
-    },
-    string: {
-      url: 'invalidUrl',
-    },
-  });
-  const schema = yup
-    .string()
-    .trim()
-    .url()
-    .required();
+yup.setLocale({
+  mixed: {
+    required: 'empty',
+  },
+  string: {
+    url: 'invalidUrl',
+  },
+});
 
+const schema = yup
+  .string()
+  .trim()
+  .url()
+  .required();
+
+const validateUrl = (url) => {
   try {
     schema.validateSync(url);
     return null;
