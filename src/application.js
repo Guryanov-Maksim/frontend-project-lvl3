@@ -80,6 +80,29 @@ const watchRssFeed = (watchedState) => {
   }, timeout);
 };
 
+const addFeed = (url, state, elements, i18nInstance, rssLink) => {
+  axios.get(url)
+    .then((response) => {
+      const { feed, posts, isValid } = parseRssContent(response.data.contents);
+      if (!isValid) {
+        state.rssForm.feedback = i18nInstance.t('errors.withoutRss');
+        state.rssForm.status = 'failed';
+        return;
+      }
+      state.rssForm.feedback = i18nInstance.t('success');
+      state.feeds.contents = [feed, ...state.feeds.contents];
+      state.feeds.links.push(rssLink);
+      state.posts = [...posts, ...state.posts];
+      state.rssForm.status = 'filling';
+      elements.form.reset();
+      elements.input.focus();
+    })
+    .catch(() => {
+      state.rssForm.feedback = i18nInstance.t('errors.network');
+      state.rssForm.status = 'failed';
+    });
+};
+
 export default (state, i18nInstance) => {
   const elements = {
     feedback: document.querySelector('.feedback'),
@@ -141,26 +164,7 @@ export default (state, i18nInstance) => {
       valid: true,
     };
     watchedState.rssForm.status = 'loading';
-    axios.get(url)
-      .then((response) => {
-        const { feed, posts, isValid } = parseRssContent(response.data.contents);
-        if (!isValid) {
-          watchedState.rssForm.feedback = i18nInstance.t('errors.withoutRss');
-          watchedState.rssForm.status = 'failed';
-          return;
-        }
-        watchedState.rssForm.feedback = i18nInstance.t('success');
-        watchedState.feeds.contents = [feed, ...watchedState.feeds.contents];
-        watchedState.feeds.links.push(rssLink);
-        watchedState.posts = [...posts, ...watchedState.posts];
-        watchedState.rssForm.status = 'filling';
-        elements.form.reset();
-        elements.input.focus();
-      })
-      .catch(() => {
-        watchedState.rssForm.feedback = i18nInstance.t('errors.network');
-        watchedState.rssForm.status = 'failed';
-      });
+    addFeed(url, watchedState, elements, i18nInstance, rssLink);
   });
 
   watchRssFeed(watchedState);
