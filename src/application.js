@@ -45,8 +45,8 @@ const getNewPosts = (posts, state, feed) => {
   return newPosts;
 };
 
-const avoidCorsProblem = (url) => (
-  `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`
+const createUrl = (link) => (
+  `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(link)}&disableCache=true`
 );
 
 const handleError = (state, error, i18nInstance) => {
@@ -62,9 +62,8 @@ const watchRssFeed = (watchedState) => {
   const timeout = 5000;
   setTimeout(() => {
     const promises = links.map((link) => {
-      const urlWithoutCorsProblem = new URL(avoidCorsProblem(link));
-      urlWithoutCorsProblem.searchParams.append('disableCache', 'true');
-      return axios.get(urlWithoutCorsProblem);
+      const url = createUrl(link);
+      return axios.get(url);
     });
     Promise.all(promises)
       .then((responses) => {
@@ -136,14 +135,13 @@ export default (state, i18nInstance) => {
       return;
     }
 
-    const urlWithoutCorsProblem = new URL(avoidCorsProblem(rssLink));
-    urlWithoutCorsProblem.searchParams.append('disableCache', 'true');
+    const url = createUrl(rssLink);
 
     watchedState.rssForm.fields.url = {
       valid: true,
     };
     watchedState.rssForm.status = 'loading';
-    axios.get(urlWithoutCorsProblem)
+    axios.get(url)
       .then((response) => {
         const { feed, posts, isValid } = parseRssContent(response.data.contents);
         if (!isValid) {
