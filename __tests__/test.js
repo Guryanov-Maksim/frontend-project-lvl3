@@ -5,6 +5,7 @@ import nock from 'nock';
 import fs from 'fs';
 import path from 'path';
 import init from '../src/init.js';
+import createCrossOriginUrl from '../src/url.js';
 
 jest.setTimeout(8000);
 
@@ -34,18 +35,13 @@ const getTestData = async (responses) => {
   return testDataEntries;
 };
 
-const avoidCorsProblem = (url) => (
-  `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`
-);
-
-const createHttpMock = (url, response = '') => {
-  const urlWithoutCorsProblem = new URL(avoidCorsProblem(url));
-  urlWithoutCorsProblem.searchParams.append('disableCache', 'true');
-  const scope = nock(urlWithoutCorsProblem.origin)
+const createHttpMock = (link, response = '') => {
+  const url = new URL(createCrossOriginUrl(link));
+  const scope = nock(url.origin)
     .defaultReplyHeaders({
       'access-control-allow-origin': '*',
     })
-    .get(`${urlWithoutCorsProblem.pathname}${urlWithoutCorsProblem.search}`)
+    .get(`${url.pathname}${url.search}`)
     .reply(200, response);
   return scope;
 };

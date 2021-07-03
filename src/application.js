@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as yup from 'yup';
 import initView from './view.js';
 import parseRssContent from './parser.js';
+import createCrossOriginUrl from './url.js';
 
 yup.setLocale({
   mixed: {
@@ -45,10 +46,6 @@ const getNewPosts = (posts, state, feed) => {
   return newPosts;
 };
 
-const createUrl = (link) => (
-  `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(link)}&disableCache=true`
-);
-
 const handleError = (state, error, i18nInstance) => {
   state.rssForm.fields.url = {
     error,
@@ -62,7 +59,7 @@ const watchRssFeed = (watchedState) => {
   const timeout = 5000;
   setTimeout(() => {
     const promises = links.map((link) => {
-      const url = createUrl(link);
+      const url = createCrossOriginUrl(link);
       return axios.get(url);
     });
     Promise.all(promises)
@@ -158,7 +155,7 @@ export default (state, i18nInstance) => {
       return;
     }
 
-    const url = createUrl(rssLink);
+    const url = createCrossOriginUrl(rssLink);
 
     watchedState.rssForm.fields.url = {
       valid: true,
