@@ -111,19 +111,27 @@ const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
       link.classList.add('fw-normal');
     }
     link.textContent = post.title;
-    link.addEventListener('click', () => handlePostWatch(watchedUiState, post));
 
     const button = document.createElement('button');
     button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#exampleModal');
     button.textContent = i18nInstance.t('posts.seeButton');
-    button.addEventListener('click', () => handlePostWatch(watchedUiState, post));
 
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     li.append(link);
     li.append(button);
+    li.addEventListener('click', (event) => {
+      switch (event.target) {
+        case button:
+        case link:
+          handlePostWatch(watchedUiState, post);
+          break;
+        default:
+          break;
+      }
+    });
 
     ul.append(li);
   });
