@@ -10,6 +10,7 @@ export default {
     success: 'RSS успешно загружен',
     posts: {
       header: 'Посты',
+      seeButton: 'Просмотр',
     },
     feeds: {
       header: 'Фиды',

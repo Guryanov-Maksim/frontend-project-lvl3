@@ -119,7 +119,7 @@ const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
     button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#exampleModal');
-    button.textContent = 'Просмотр';
+    button.textContent = i18nInstance.t('posts.seeButton');
     button.addEventListener('click', () => handlePostWatch(watchedUiState, post));
 
     const li = document.createElement('li');
