@@ -57,9 +57,7 @@ const renderFeeds = (feeds, container, i18nInstance) => {
   header.textContent = i18nInstance.t('feeds.header');
   const ul = document.createElement('ul');
   ul.classList.add('list-group-item', 'border-0', 'border-end-0');
-  listElements.forEach((li) => {
-    ul.append(li);
-  });
+  ul.append(...listElements);
   container.innerHTML = '';
   container.append(header);
   container.append(ul);
