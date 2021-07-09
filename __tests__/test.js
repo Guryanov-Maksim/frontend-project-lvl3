@@ -177,7 +177,7 @@ test('should not add feed twice', async () => {
   expect(elements.feedback).toHaveTextContent('RSS уже существует');
 });
 
-test('modal opening and closing', async () => {
+test('modal opening', async () => {
   const { feed2 } = JSON.parse(testData.feedsAndPosts);
 
   const url = 'http://localhost.com/feed;';
