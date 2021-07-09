@@ -191,8 +191,4 @@ test('modal opening and closing', async () => {
     expect(screen.getByTestId('modal-body')).toHaveTextContent(feed2.post1.description);
     expect(screen.getByTestId('modal-details')).toHaveAttribute('href', feed2.post1.link);
   });
-  userEvent.click(screen.getByTestId('modal-close'));
-  expect(screen.getByTestId('modal-title')).toBeEmptyDOMElement();
-  expect(screen.getByTestId('modal-body')).toBeEmptyDOMElement();
-  expect(screen.getByTestId('modal-details')).toHaveAttribute('href', '#');
 });
