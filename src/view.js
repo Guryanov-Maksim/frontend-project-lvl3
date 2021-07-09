@@ -63,23 +63,14 @@ const renderFeeds = (feeds, container, i18nInstance) => {
   container.append(ul);
 };
 
-const renderModal = (uiState, elements) => {
-  if (uiState.activePost === null) {
-    elements.modalTitle.textContent = '';
-    elements.modalBody.textContent = '';
-    elements.modalDetails.setAttribute('href', '#');
-    return;
-  }
-  elements.modalTitle.textContent = uiState.activePost.title;
-  elements.modalBody.textContent = uiState.activePost.description;
-  elements.modalDetails.setAttribute('href', uiState.activePost.link);
+const renderModal = (state, elements) => {
+  elements.modalTitle.textContent = state.uiState.activePost.title;
+  elements.modalBody.textContent = state.uiState.activePost.description;
+  elements.modalDetails.setAttribute('href', state.uiState.activePost.link);
 };
 
-const renderPostLink = (uiState, elements) => {
-  if (uiState.activePost === null) {
-    return;
-  }
-  const link = elements.postsContainer.querySelector(`[data-id="${uiState.activePost.id}"]`);
+const renderPostLink = (state, elements) => {
+  const link = elements.postsContainer.querySelector(`[data-id="${state.uiState.activePost.id}"]`);
   link.classList.remove('fw-bold');
   link.classList.add('fw-normal');
 };
@@ -89,7 +80,7 @@ const handlePostWatch = (uiState, post) => {
   uiState.visitedPostId.push(post.id);
 };
 
-const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
+const renderPosts = (state, elements, i18nInstance) => {
   const header = i18nInstance.t('posts.header');
   elements.postsContainer.innerHTML = `<h2>${header}</h2>`;
   const ul = document.createElement('ul');
@@ -126,7 +117,7 @@ const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
       switch (event.target) {
         case button:
         case link:
-          handlePostWatch(watchedUiState, post);
+          handlePostWatch(state.uiState, post);
           break;
         default:
           break;
@@ -139,34 +130,25 @@ const renderPosts = (state, elements, i18nInstance, watchedUiState) => {
 };
 
 const initView = (state, elements, i18nInstance) => {
-  const uiMapping = {
-    activePost: (uiState) => {
-      renderModal(uiState, elements);
-      renderPostLink(uiState, elements);
-    },
-  };
-
-  const watchedUiState = onChange(state.uiState, (path) => {
-    if (uiMapping[path]) {
-      uiMapping[path](state.uiState);
-    }
-  });
-
   const mapping = {
     'rssForm.feedback': () => renderFeedback(state.rssForm.feedback, elements.feedback),
     'feeds.contents': () => renderFeeds(state.feeds.contents, elements.feedContainer, i18nInstance),
-    posts: () => renderPosts(state, elements, i18nInstance, watchedUiState),
+    posts: (watchedState) => renderPosts(watchedState, elements, i18nInstance),
     'rssForm.fields.url': () => renderInput(state, elements),
     'rssForm.status': () => renderForm(state, elements),
+    'uiState.activePost': (watchedState) => {
+      renderModal(watchedState, elements);
+      renderPostLink(watchedState, elements);
+    },
   };
 
   const watchedState = onChange(state, (path) => {
     if (mapping[path]) {
-      mapping[path]();
+      mapping[path](watchedState);
     }
   });
 
-  return { watchedState, watchedUiState };
+  return watchedState;
 };
 
 export default initView;

@@ -117,20 +117,7 @@ export default (state, i18nInstance) => {
 
   elements.input.focus();
 
-  const { watchedState, watchedUiState } = initView(state, elements, i18nInstance);
-
-  const handleModalClearing = (event, rightTarget) => {
-    if (event.target !== rightTarget) {
-      return;
-    }
-    watchedUiState.activePost = null;
-  };
-
-  elements.modal.addEventListener('click', (event) => handleModalClearing(event, elements.modal));
-
-  elements.closeButtons.forEach((button) => {
-    button.addEventListener('click', (event) => handleModalClearing(event, button));
-  });
+  const watchedState = initView(state, elements, i18nInstance);
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
