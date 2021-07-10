@@ -14,6 +14,7 @@ export default () => {
       feeds: {
         links: [],
         contents: [],
+        currentId: 1,
       },
       posts: [],
       rssForm: {

@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 const getElementDetails = (dom) => {
   const titleElement = dom.querySelector('title');
   const title = titleElement.textContent;
@@ -7,16 +5,14 @@ const getElementDetails = (dom) => {
   const description = descriptionElement.textContent;
   const linkElement = dom.querySelector('link');
   const link = linkElement.textContent;
-  const id = _.uniqueId();
   return {
     title,
     description,
     link,
-    id,
   };
 };
 
-export default (content) => {
+export default (content, state) => {
   const domparser = new DOMParser();
   const dom = domparser.parseFromString(content, 'application/xml');
   const error = dom.querySelector('parsererror');
@@ -28,16 +24,16 @@ export default (content) => {
     };
   }
   const feedDetails = getElementDetails(dom);
-  const feedId = feedDetails.id;
+  const feedId = state.feeds.currentId;
   const postElements = dom.querySelectorAll('item');
-  const posts = [...postElements].reduce((acc, postElement) => {
+  const posts = [...postElements].reduce((acc, postElement, index) => {
     const postDetails = getElementDetails(postElement);
     const post = {
       title: postDetails.title,
       link: postDetails.link,
       description: postDetails.description,
       feedId,
-      id: postDetails.id,
+      id: state.posts.length + index + 1,
     };
     return [...acc, post];
   }, []);
@@ -45,7 +41,7 @@ export default (content) => {
     title: feedDetails.title,
     link: feedDetails.link,
     description: feedDetails.description,
-    id: feedDetails.id,
+    id: feedId,
   };
   return {
     feed,

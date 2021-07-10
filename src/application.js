@@ -65,7 +65,7 @@ const watchRssFeed = (watchedState) => {
     Promise.all(promises)
       .then((responses) => {
         responses.forEach((response) => {
-          const { feed, posts } = parseRssContent(response.data.contents);
+          const { feed, posts } = parseRssContent(response.data.contents, watchedState);
           const newPosts = getNewPosts(posts, watchedState, feed);
           watchedState.posts = [...newPosts, ...watchedState.posts];
         });
@@ -80,7 +80,8 @@ const watchRssFeed = (watchedState) => {
 const addFeed = (url, state, elements, i18nInstance, rssLink) => {
   axios.get(url)
     .then((response) => {
-      const { feed, posts, isValid } = parseRssContent(response.data.contents);
+      const { feed, posts, isValid } = parseRssContent(response.data.contents, state);
+      state.feeds.currentId += 1;
       if (!isValid) {
         state.rssForm.feedback = i18nInstance.t('errors.withoutRss');
         state.rssForm.status = 'failed';
