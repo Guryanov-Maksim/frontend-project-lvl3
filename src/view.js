@@ -1,7 +1,7 @@
 import onChange from 'on-change';
 
-const renderForm = (state, elements) => {
-  switch (state.rssForm.status) {
+const renderForm = (formStatus, elements) => {
+  switch (formStatus) {
     case 'loading':
       elements.addButton.setAttribute('disabled', true);
       elements.input.setAttribute('readonly', true);
@@ -19,13 +19,13 @@ const renderForm = (state, elements) => {
       elements.input.removeAttribute('readonly');
       break;
     default: {
-      throw new Error(`Unsupported status: ${state.rssForm.status}`);
+      throw new Error(`Unsupported status: ${formStatus}`);
     }
   }
 };
 
-const renderInput = (state, { input }) => {
-  if (!state.rssForm.fields.url.valid) {
+const renderInput = (isUrlValid, input) => {
+  if (!isUrlValid) {
     input.classList.add('border', 'border-warning');
     return;
   }
@@ -63,14 +63,15 @@ const renderFeeds = (feeds, container, i18nInstance) => {
   container.append(ul);
 };
 
-const renderModal = (state, elements) => {
-  elements.modalTitle.textContent = state.uiState.activePost.title;
-  elements.modalBody.textContent = state.uiState.activePost.description;
-  elements.modalDetails.setAttribute('href', state.uiState.activePost.link);
+const renderModal = (activePost, elements) => {
+  const { title, description, link } = activePost;
+  elements.modalTitle.textContent = title;
+  elements.modalBody.textContent = description;
+  elements.modalDetails.setAttribute('href', link);
 };
 
-const renderPostLink = (state, elements) => {
-  const link = elements.postsContainer.querySelector(`[data-id="${state.uiState.activePost.id}"]`);
+const renderPostLink = (activePostId, elements) => {
+  const link = elements.postsContainer.querySelector(`[data-id="${activePostId}"]`);
   link.classList.remove('fw-bold');
   link.classList.add('fw-normal');
 };
@@ -134,11 +135,11 @@ const initView = (state, elements, i18nInstance) => {
     'rssForm.feedback': () => renderFeedback(state.rssForm.feedback, elements.feedback),
     'feeds.contents': () => renderFeeds(state.feeds.contents, elements.feedContainer, i18nInstance),
     posts: (watchedState) => renderPosts(watchedState, elements, i18nInstance),
-    'rssForm.fields.url': () => renderInput(state, elements),
-    'rssForm.status': () => renderForm(state, elements),
+    'rssForm.fields.url.valid': () => renderInput(state.rssForm.fields.url.valid, elements.input),
+    'rssForm.status': () => renderForm(state.rssForm.status, elements),
     'uiState.activePost': (watchedState) => {
-      renderModal(watchedState, elements);
-      renderPostLink(watchedState, elements);
+      renderModal(watchedState.uiState.activePost, elements);
+      renderPostLink(watchedState.uiState.activePost.id, elements);
     },
   };
 

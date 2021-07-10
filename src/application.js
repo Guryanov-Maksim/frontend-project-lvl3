@@ -47,10 +47,7 @@ const getNewPosts = (posts, state, feed) => {
 };
 
 const handleError = (state, error, i18nInstance) => {
-  state.rssForm.fields.url = {
-    error,
-    valid: false,
-  };
+  state.rssForm.fields.valid = false;
   state.rssForm.feedback = i18nInstance.t(`errors.${error}`);
 };
 
@@ -78,9 +75,7 @@ const watchRssFeed = (watchedState) => {
 };
 
 const addFeed = (state, elements, i18nInstance, rssLink) => {
-  state.rssForm.fields.url = {
-    valid: true,
-  };
+  state.rssForm.fields.url.valid = true;
   const url = createCrossOriginUrl(rssLink);
 
   axios.get(url)
@@ -141,9 +136,7 @@ export default (state, i18nInstance) => {
     const attachedFeedError = checkRssTracking(rssLink, watchedState.feeds.links);
     if (attachedFeedError) {
       watchedState.rssForm.feedback = i18nInstance.t(`errors.${attachedFeedError}`);
-      watchedState.rssForm.fields.url = {
-        valid: false,
-      };
+      watchedState.rssForm.fields.url.valid = false;
       watchedState.rssForm.status = 'failed';
       return;
     }
