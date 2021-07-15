@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import initView from './view.js';
 import parseRssContent from './parser.js';
 import createCrossOriginUrl from './url.js';
+import normalizeDom from './normalizer.js';
 
 yup.setLocale({
   mixed: {
@@ -51,7 +52,7 @@ const handleError = (state, error, i18nInstance) => {
   state.rssForm.feedback = i18nInstance.t(`errors.${error}`);
 };
 
-const watchRssFeed = (watchedState) => {
+const watchRssFeed = (watchedState, i18nInstance) => {
   const { links } = watchedState.feeds;
   const timeout = 5000;
   setTimeout(() => {
@@ -61,8 +62,9 @@ const watchRssFeed = (watchedState) => {
     });
     Promise.all(promises)
       .then((responses) => {
-        responses.forEach((response) => {
-          const { feed, posts } = parseRssContent(response.data.contents, watchedState);
+        responses.forEach((response, index) => {
+          const { dom } = parseRssContent(response.data.contents, i18nInstance);
+          const { feed, posts } = normalizeDom(dom, links[index]);
           const newPosts = getNewPosts(posts, watchedState, feed);
           watchedState.posts = [...newPosts, ...watchedState.posts];
         });
@@ -70,7 +72,7 @@ const watchRssFeed = (watchedState) => {
       .catch((error) => {
         throw error;
       })
-      .finally(() => watchRssFeed(watchedState));
+      .finally(() => watchRssFeed(watchedState, i18nInstance));
   }, timeout);
 };
 
@@ -80,16 +82,20 @@ const addFeed = (state, elements, i18nInstance, rssLink) => {
 
   axios.get(url)
     .then((response) => {
-      const { feed, posts, isValid } = parseRssContent(response.data.contents, state);
+      const { dom, parserError } = parseRssContent(response.data.contents, i18nInstance);
       state.feeds.currentId += 1;
-      if (!isValid) {
-        state.rssForm.feedback = i18nInstance.t('errors.withoutRss');
+      if (parserError) {
+        state.rssForm.feedback = parserError;
         state.rssForm.status = 'failed';
         return;
       }
+      const { feed, posts } = normalizeDom(dom, rssLink);
       state.rssForm.feedback = i18nInstance.t('success');
       state.feeds.contents = [feed, ...state.feeds.contents];
-      state.feeds.links.push(rssLink);
+      // console.log(rssLink);
+      // console.log(feed);
+      state.feeds.links.push(feed.rssLink);
+      // state.feeds.links.push(rssLink);
       state.posts = [...posts, ...state.posts];
       state.rssForm.status = 'filling';
       elements.form.reset();
@@ -145,5 +151,5 @@ export default (state, i18nInstance) => {
     addFeed(watchedState, elements, i18nInstance, rssLink);
   });
 
-  watchRssFeed(watchedState);
+  watchRssFeed(watchedState, i18nInstance);
 };
