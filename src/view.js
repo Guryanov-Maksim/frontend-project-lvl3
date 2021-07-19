@@ -3,6 +3,7 @@ import onChange from 'on-change';
 const renderForm = (formStatus, elements) => {
   switch (formStatus) {
     case 'loading':
+      elements.input.classList.remove('border', 'border-warning');
       elements.addButton.setAttribute('disabled', true);
       elements.input.setAttribute('readonly', true);
       break;
@@ -11,25 +12,19 @@ const renderForm = (formStatus, elements) => {
       elements.input.removeAttribute('readonly');
       elements.feedback.classList.remove('text-danger');
       elements.feedback.classList.add('text-success');
+      elements.input.classList.remove('border', 'border-warning');
       break;
     case 'failed':
       elements.feedback.classList.add('text-danger');
       elements.feedback.classList.remove('text-success');
       elements.addButton.removeAttribute('disabled');
       elements.input.removeAttribute('readonly');
+      elements.input.classList.add('border', 'border-warning');
       break;
     default: {
       throw new Error(`Unsupported status: ${formStatus}`);
     }
   }
-};
-
-const renderInput = (isUrlValid, input) => {
-  if (!isUrlValid) {
-    input.classList.add('border', 'border-warning');
-    return;
-  }
-  input.classList.remove('border', 'border-warning');
 };
 
 const renderFeedback = (feedback, container) => {
@@ -135,7 +130,6 @@ const initView = (state, elements, i18nInstance) => {
     'rssForm.feedback': () => renderFeedback(state.rssForm.feedback, elements.feedback),
     feeds: () => renderFeeds(state.feeds, elements.feedContainer, i18nInstance),
     posts: (watchedState) => renderPosts(watchedState, elements, i18nInstance),
-    'rssForm.fields.url.valid': () => renderInput(state.rssForm.fields.url.valid, elements.input),
     'rssForm.status': () => renderForm(state.rssForm.status, elements),
     'uiState.activePost': (watchedState) => {
       renderModal(watchedState.uiState.activePost, elements);

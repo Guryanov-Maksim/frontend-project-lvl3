@@ -14,11 +14,6 @@ export default () => {
       feeds: [],
       posts: [],
       rssForm: {
-        fields: {
-          url: {
-            valid: true,
-          },
-        },
         feedback: '',
         status: 'filling',
       },
