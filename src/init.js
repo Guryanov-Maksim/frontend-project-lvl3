@@ -11,11 +11,7 @@ export default () => {
     resources,
   }).then(() => {
     const state = {
-      feeds: {
-        links: [],
-        contents: [],
-        currentId: 1,
-      },
+      feeds: [],
       posts: [],
       rssForm: {
         fields: {

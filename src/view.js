@@ -133,7 +133,7 @@ const renderPosts = (state, elements, i18nInstance) => {
 const initView = (state, elements, i18nInstance) => {
   const mapping = {
     'rssForm.feedback': () => renderFeedback(state.rssForm.feedback, elements.feedback),
-    'feeds.contents': () => renderFeeds(state.feeds.contents, elements.feedContainer, i18nInstance),
+    feeds: () => renderFeeds(state.feeds, elements.feedContainer, i18nInstance),
     posts: (watchedState) => renderPosts(watchedState, elements, i18nInstance),
     'rssForm.fields.url.valid': () => renderInput(state.rssForm.fields.url.valid, elements.input),
     'rssForm.status': () => renderForm(state.rssForm.status, elements),
