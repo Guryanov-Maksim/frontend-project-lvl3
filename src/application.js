@@ -48,7 +48,7 @@ const getNewPosts = (posts, state, feed) => {
 };
 
 const handleError = (state, error, i18nInstance) => {
-  state.rssForm.feedback = i18nInstance.t(`errors.${error}`);
+  state.rssForm.error = i18nInstance.t(`errors.${error}`);
 };
 
 const watchRssFeed = (watchedState, i18nInstance) => {
@@ -83,21 +83,21 @@ const addFeed = (state, elements, i18nInstance, rssLink) => {
     .then((response) => {
       const { dom, parserError } = parseRssContent(response.data.contents, i18nInstance);
       if (parserError) {
-        state.rssForm.feedback = parserError;
-        state.rssForm.status = 'failed';
+        state.rssForm.error = parserError;
+        state.rssForm.state = 'failed';
         return;
       }
       const { feed, posts } = normalizeDom(dom, rssLink);
-      state.rssForm.feedback = i18nInstance.t('success');
+      state.rssForm.error = i18nInstance.t('success');
       state.feeds = [feed, ...state.feeds];
       state.posts = [...posts, ...state.posts];
-      state.rssForm.status = 'filling';
+      state.rssForm.state = 'filling';
       elements.form.reset();
       elements.input.focus();
     })
     .catch(() => {
-      state.rssForm.feedback = i18nInstance.t('errors.network');
-      state.rssForm.status = 'failed';
+      state.rssForm.error = i18nInstance.t('errors.network');
+      state.rssForm.state = 'failed';
     });
 };
 
@@ -129,18 +129,18 @@ export default (state, i18nInstance) => {
     const error = validateUrl(rssLink);
     if (error) {
       handleError(watchedState, error, i18nInstance);
-      watchedState.rssForm.status = 'failed';
+      watchedState.rssForm.state = 'failed';
       return;
     }
 
     const attachedFeedError = checkRssTracking(rssLink, watchedState.feeds);
     if (attachedFeedError) {
-      watchedState.rssForm.feedback = i18nInstance.t(`errors.${attachedFeedError}`);
-      watchedState.rssForm.status = 'failed';
+      watchedState.rssForm.error = i18nInstance.t(`errors.${attachedFeedError}`);
+      watchedState.rssForm.state = 'failed';
       return;
     }
 
-    watchedState.rssForm.status = 'loading';
+    watchedState.rssForm.state = 'loading';
     addFeed(watchedState, elements, i18nInstance, rssLink);
   });
   watchRssFeed(watchedState, i18nInstance);

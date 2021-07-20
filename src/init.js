@@ -14,11 +14,11 @@ export default () => {
       feeds: [],
       posts: [],
       rssForm: {
-        feedback: '',
-        status: 'filling',
+        error: null,
+        state: 'filling',
       },
       uiState: {
-        visitedPostId: [],
+        visitedPostIds: [],
         activePost: null,
       },
     };

@@ -1,7 +1,7 @@
 import onChange from 'on-change';
 
-const renderForm = (formStatus, elements) => {
-  switch (formStatus) {
+const renderForm = (formState, elements) => {
+  switch (formState) {
     case 'loading':
       elements.input.classList.remove('border', 'border-warning');
       elements.addButton.setAttribute('disabled', true);
@@ -22,13 +22,13 @@ const renderForm = (formStatus, elements) => {
       elements.input.classList.add('border', 'border-warning');
       break;
     default: {
-      throw new Error(`Unsupported status: ${formStatus}`);
+      throw new Error(`Unsupported state: ${formState}`);
     }
   }
 };
 
-const renderFeedback = (feedback, container) => {
-  container.textContent = feedback;
+const renderFeedback = (error, container) => {
+  container.textContent = error;
 };
 
 const renderFeeds = (feeds, container, i18nInstance) => {
@@ -73,7 +73,7 @@ const renderPostLink = (activePostId, elements) => {
 
 const handlePostWatch = (uiState, post) => {
   uiState.activePost = post;
-  uiState.visitedPostId.push(post.id);
+  uiState.visitedPostIds.push(post.id);
 };
 
 const renderPosts = (state, elements, i18nInstance) => {
@@ -93,7 +93,7 @@ const renderPosts = (state, elements, i18nInstance) => {
       link.setAttribute(attribute, value);
     });
     link.classList.add('fw-bold');
-    if (state.uiState.visitedPostId.includes(post.id)) {
+    if (state.uiState.visitedPostIds.includes(post.id)) {
       link.classList.remove('fw-bold');
       link.classList.add('fw-normal');
     }
@@ -127,10 +127,10 @@ const renderPosts = (state, elements, i18nInstance) => {
 
 const initView = (state, elements, i18nInstance) => {
   const mapping = {
-    'rssForm.feedback': () => renderFeedback(state.rssForm.feedback, elements.feedback),
+    'rssForm.error': () => renderFeedback(state.rssForm.error, elements.feedback),
     feeds: () => renderFeeds(state.feeds, elements.feedContainer, i18nInstance),
     posts: (watchedState) => renderPosts(watchedState, elements, i18nInstance),
-    'rssForm.status': () => renderForm(state.rssForm.status, elements),
+    'rssForm.state': () => renderForm(state.rssForm.state, elements),
     'uiState.activePost': (watchedState) => {
       renderModal(watchedState.uiState.activePost, elements);
       renderPostLink(watchedState.uiState.activePost.id, elements);
