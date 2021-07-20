@@ -72,7 +72,7 @@ const watchRssFeed = (watchedState, i18nInstance) => {
       .catch((error) => {
         throw error;
       })
-      .finally(() => watchRssFeed(watchedState, i18nInstance));
+      .then(() => watchRssFeed(watchedState, i18nInstance));
   }, timeout);
 };
 
@@ -98,9 +98,6 @@ const addFeed = (state, elements, i18nInstance, rssLink) => {
     .catch(() => {
       state.rssForm.feedback = i18nInstance.t('errors.network');
       state.rssForm.status = 'failed';
-    })
-    .then(() => {
-      watchRssFeed(state, i18nInstance);
     });
 };
 
@@ -146,4 +143,5 @@ export default (state, i18nInstance) => {
     watchedState.rssForm.status = 'loading';
     addFeed(watchedState, elements, i18nInstance, rssLink);
   });
+  watchRssFeed(watchedState, i18nInstance);
 };
