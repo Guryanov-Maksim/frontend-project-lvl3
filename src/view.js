@@ -73,7 +73,7 @@ const renderPostLink = (activePostId, elements) => {
 
 const handlePostWatch = (uiState, post) => {
   uiState.activePost = post;
-  uiState.visitedPostIds.push(post.id);
+  uiState.visitedPostIds = new Set(...uiState.visitedPostIds, post.id);
 };
 
 const renderPosts = (state, elements, i18nInstance) => {

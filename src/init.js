@@ -11,6 +11,7 @@ export default () => {
     resources,
   }).then(() => {
     const state = {
+      rssWatching: 'stop',
       feeds: [],
       posts: [],
       rssForm: {
