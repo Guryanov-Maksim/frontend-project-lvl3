@@ -20,7 +20,7 @@ export default () => {
       },
       uiState: {
         visitedPostIds: new Set(),
-        activePost: null,
+        activePostId: null,
       },
     };
     addAndWatchFeeds(state, i18nInstance);

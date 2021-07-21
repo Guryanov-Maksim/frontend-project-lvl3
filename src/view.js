@@ -58,7 +58,8 @@ const renderFeeds = (feeds, container, i18nInstance) => {
   container.append(ul);
 };
 
-const renderModal = (activePost, elements) => {
+const renderModal = (state, elements) => {
+  const activePost = state.posts.find((post) => post.id === state.uiState.activePostId);
   const { title, description, link } = activePost;
   elements.modalTitle.textContent = title;
   elements.modalBody.textContent = description;
@@ -72,7 +73,7 @@ const renderPostLink = (activePostId, elements) => {
 };
 
 const handlePostWatch = (uiState, post) => {
-  uiState.activePost = post;
+  uiState.activePostId = post.id;
   uiState.visitedPostIds.add(post.id);
 };
 
@@ -131,9 +132,9 @@ const initView = (state, elements, i18nInstance) => {
     feeds: () => renderFeeds(state.feeds, elements.feedContainer, i18nInstance),
     posts: (watchedState) => renderPosts(watchedState, elements, i18nInstance),
     'rssForm.state': () => renderForm(state.rssForm.state, elements),
-    'uiState.activePost': (watchedState) => {
-      renderModal(watchedState.uiState.activePost, elements);
-      renderPostLink(watchedState.uiState.activePost.id, elements);
+    'uiState.activePostId': (watchedState) => {
+      renderModal(watchedState, elements);
+      renderPostLink(watchedState.uiState.activePostId, elements);
     },
   };
 
