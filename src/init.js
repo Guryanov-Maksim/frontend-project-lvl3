@@ -19,7 +19,7 @@ export default () => {
         state: 'filling',
       },
       uiState: {
-        visitedPostIds: [],
+        visitedPostIds: new Set(),
         activePost: null,
       },
     };

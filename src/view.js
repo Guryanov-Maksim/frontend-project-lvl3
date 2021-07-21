@@ -73,7 +73,7 @@ const renderPostLink = (activePostId, elements) => {
 
 const handlePostWatch = (uiState, post) => {
   uiState.activePost = post;
-  uiState.visitedPostIds = new Set(...uiState.visitedPostIds, post.id);
+  uiState.visitedPostIds.add(post.id);
 };
 
 const renderPosts = (state, elements, i18nInstance) => {
@@ -93,7 +93,7 @@ const renderPosts = (state, elements, i18nInstance) => {
       link.setAttribute(attribute, value);
     });
     link.classList.add('fw-bold');
-    if (state.uiState.visitedPostIds.includes(post.id)) {
+    if (state.uiState.visitedPostIds.has(post.id)) {
       link.classList.remove('fw-bold');
       link.classList.add('fw-normal');
     }
