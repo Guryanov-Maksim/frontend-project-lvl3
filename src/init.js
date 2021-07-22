@@ -5,7 +5,7 @@ import addAndWatchFeeds from './application.js';
 export default () => {
   const defaultLanguage = 'ru';
   const i18nInstance = i18next.createInstance();
-  i18nInstance.init({
+  return i18nInstance.init({
     lng: defaultLanguage,
     debug: false,
     resources,

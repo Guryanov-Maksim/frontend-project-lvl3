@@ -54,10 +54,10 @@ beforeAll(async () => {
   });
 });
 
-beforeEach(() => {
+beforeEach(async () => {
   document.body.innerHTML = testData.initialHtml;
 
-  init();
+  await init();
 
   elements.submit = screen.getByLabelText('add');
   elements.input = screen.getByLabelText('url');
@@ -67,10 +67,12 @@ beforeEach(() => {
 test.each([
   [' ', 'Не должно быть пустым'],
   ['wrongUrl.wrong', 'Ссылка должна быть валидным URL'],
-])('validation: url = \'%s\', feedback message = \'%s\'', (url, expectedFeedback) => {
+])('validation: url = \'%s\', feedback message = \'%s\'', async (url, expectedFeedback) => {
   userEvent.type(elements.input, url);
   userEvent.click(elements.submit);
-  expect(screen.getByText(expectedFeedback)).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.getByText(expectedFeedback)).toBeInTheDocument();
+  });
 });
 
 test('form is disabled while submitting', async () => {
@@ -81,9 +83,12 @@ test('form is disabled while submitting', async () => {
 
   expect(elements.submit).toBeEnabled();
   expect(elements.input).not.toHaveAttribute('readonly');
+
   userEvent.click(elements.submit);
-  expect(elements.submit).toBeDisabled();
-  expect(elements.input).toHaveAttribute('readonly');
+  await waitFor(() => {
+    expect(elements.submit).toBeDisabled();
+    expect(elements.input).toHaveAttribute('readonly');
+  });
 
   await waitFor(() => {
     expect(elements.submit).toBeEnabled();
@@ -174,7 +179,9 @@ test('should not add feed twice', async () => {
   });
   userEvent.type(elements.input, url);
   userEvent.click(elements.submit);
-  expect(elements.feedback).toHaveTextContent('RSS уже существует');
+  await waitFor(() => {
+    expect(elements.feedback).toHaveTextContent('RSS уже существует');
+  });
 });
 
 test('modal opening', async () => {
