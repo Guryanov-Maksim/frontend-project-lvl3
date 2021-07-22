@@ -20,11 +20,6 @@ const schema = yup
   .url()
   .required();
 
-const validateUrl = (url) => {
-  schema.validateSync(url);
-  return url;
-};
-
 const isTracked = (link, feeds) => feeds.some((feed) => feed.rssLink === link);
 
 const checkRssTracking = (link, feeds) => {
@@ -130,11 +125,14 @@ export default (state, i18nInstance) => {
 
     const promise = Promise.resolve(rssLink);
     promise
-      .then((link) => validateUrl(link))
-      .then((validRssLink) => checkRssTracking(validRssLink, watchedState.feeds))
-      .then((untrackedRssLink) => {
+      .then((rssUrl) => {
+        schema.validateSync(rssUrl);
+        return rssUrl;
+      })
+      .then((validUrl) => checkRssTracking(validUrl, watchedState.feeds))
+      .then((untrackedRssUrl) => {
         watchedState.rssForm.state = 'loading';
-        addFeed(watchedState, elements, i18nInstance, untrackedRssLink);
+        addFeed(watchedState, elements, i18nInstance, untrackedRssUrl);
       })
       .catch((error) => {
         watchedState.rssForm.error = i18nInstance.t(`errors.${error.message}`);
