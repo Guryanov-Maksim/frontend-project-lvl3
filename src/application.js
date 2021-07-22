@@ -21,19 +21,18 @@ const schema = yup
   .required();
 
 const validateUrl = (url) => {
-  try {
-    schema.validateSync(url);
-    return null;
-  } catch (error) {
-    return error.message;
-  }
+  schema.validateSync(url);
+  return url;
 };
 
-const checkRssTracking = (link, feeds) => (
-  (feeds.some((feed) => feed.rssLink === link))
-    ? 'isAdded'
-    : null
-);
+const isTracked = (link, feeds) => feeds.some((feed) => feed.rssLink === link);
+
+const checkRssTracking = (link, feeds) => {
+  if (isTracked(link, feeds)) {
+    throw new Error('isAdded');
+  }
+  return link;
+};
 
 const getNewPosts = (posts, state, feed) => {
   const attachedFeed = state.feeds.find((feedInState) => feed.link === feedInState.link);
@@ -47,10 +46,6 @@ const getNewPosts = (posts, state, feed) => {
   return newPosts;
 };
 
-const handleError = (state, error, i18nInstance) => {
-  state.rssForm.error = i18nInstance.t(`errors.${error}`);
-};
-
 const watchRssFeed = (watchedState, i18nInstance) => {
   const { feeds } = watchedState;
   const links = feeds.map((feed) => feed.rssLink);
@@ -61,10 +56,10 @@ const watchRssFeed = (watchedState, i18nInstance) => {
       return axios.get(url);
     });
     Promise.all(promises)
-      .then((responses) => {
-        responses.forEach((response, index) => {
-          const { dom } = parseRssContent(response.data.contents, i18nInstance);
-          const { feed, posts } = normalizeDom(dom, links[index]);
+      .then((responses) => responses.map((response) => parseRssContent(response.data.contents)))
+      .then((doms) => doms.map((dom) => normalizeDom(dom)))
+      .then((normalizeDoms) => {
+        normalizeDoms.forEach(({ feed, posts }) => {
           const newPosts = getNewPosts(posts, watchedState, feed);
           watchedState.posts = [...newPosts, ...watchedState.posts];
         });
@@ -88,14 +83,10 @@ const addFeed = (state, elements, i18nInstance, rssLink) => {
   const url = createCrossOriginUrl(rssLink);
 
   axios.get(url)
-    .then((response) => {
-      const { dom, parserError } = parseRssContent(response.data.contents, i18nInstance);
-      if (parserError) {
-        state.rssForm.error = parserError;
-        state.rssForm.state = 'failed';
-        return;
-      }
-      const { feed, posts } = normalizeDom(dom, rssLink);
+    .then((response) => parseRssContent(response.data.contents))
+    .then((dom) => normalizeDom(dom, rssLink))
+    .then((result) => {
+      const { feed, posts } = result;
       state.rssForm.error = i18nInstance.t('success');
       state.feeds = [feed, ...state.feeds];
       state.posts = [...posts, ...state.posts];
@@ -103,8 +94,8 @@ const addFeed = (state, elements, i18nInstance, rssLink) => {
       elements.form.reset();
       elements.input.focus();
     })
-    .catch(() => {
-      state.rssForm.error = i18nInstance.t('errors.network');
+    .catch((error) => {
+      state.rssForm.error = i18nInstance.t(`errors.${error.message}`);
       state.rssForm.state = 'failed';
     })
     .then(() => {
@@ -137,21 +128,17 @@ export default (state, i18nInstance) => {
     const formData = new FormData(e.target);
     const rssLink = formData.get('rss-url');
 
-    const error = validateUrl(rssLink);
-    if (error) {
-      handleError(watchedState, error, i18nInstance);
-      watchedState.rssForm.state = 'failed';
-      return;
-    }
-
-    const attachedFeedError = checkRssTracking(rssLink, watchedState.feeds);
-    if (attachedFeedError) {
-      watchedState.rssForm.error = i18nInstance.t(`errors.${attachedFeedError}`);
-      watchedState.rssForm.state = 'failed';
-      return;
-    }
-
-    watchedState.rssForm.state = 'loading';
-    addFeed(watchedState, elements, i18nInstance, rssLink);
+    const promise = Promise.resolve(rssLink);
+    promise
+      .then((link) => validateUrl(link))
+      .then((validRssLink) => checkRssTracking(validRssLink, watchedState.feeds))
+      .then((untrackedRssLink) => {
+        watchedState.rssForm.state = 'loading';
+        addFeed(watchedState, elements, i18nInstance, untrackedRssLink);
+      })
+      .catch((error) => {
+        watchedState.rssForm.error = i18nInstance.t(`errors.${error.message}`);
+        watchedState.rssForm.state = 'failed';
+      });
   });
 };
