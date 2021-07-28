@@ -123,8 +123,7 @@ export default (state, i18nInstance) => {
     const formData = new FormData(e.target);
     const rssLink = formData.get('rss-url');
 
-    const promise = Promise.resolve(rssLink);
-    promise
+    Promise.resolve(rssLink)
       .then((rssUrl) => {
         schema.validateSync(rssUrl);
         return rssUrl;
