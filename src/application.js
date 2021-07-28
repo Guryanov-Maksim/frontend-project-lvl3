@@ -8,25 +8,22 @@ import normalizeDom from './normalizer.js';
 yup.setLocale({
   mixed: {
     required: 'empty',
+    notOneOf: 'isAdded',
   },
   string: {
     url: 'invalidUrl',
   },
 });
 
-const schema = yup
-  .string()
-  .trim()
-  .url()
-  .required();
-
-const isTracked = (link, feeds) => feeds.some((feed) => feed.rssLink === link);
-
-const checkRssTracking = (link, feeds) => {
-  if (isTracked(link, feeds)) {
-    throw new Error('isAdded');
-  }
-  return link;
+const validateUrl = (url, feeds) => {
+  const trackedFeedUrls = feeds.map((feed) => feed.rssLink);
+  const schema = yup
+    .string()
+    .trim()
+    .url()
+    .required()
+    .notOneOf(trackedFeedUrls);
+  return schema.validate(url);
 };
 
 const getNewPosts = (posts, state, feed) => {
@@ -123,12 +120,7 @@ export default (state, i18nInstance) => {
     const formData = new FormData(e.target);
     const rssLink = formData.get('rss-url');
 
-    Promise.resolve(rssLink)
-      .then((rssUrl) => {
-        schema.validateSync(rssUrl);
-        return rssUrl;
-      })
-      .then((validUrl) => checkRssTracking(validUrl, watchedState.feeds))
+    validateUrl(rssLink, watchedState.feeds)
       .then((untrackedRssUrl) => {
         watchedState.rssForm.state = 'loading';
         addFeed(watchedState, elements, i18nInstance, untrackedRssUrl);
