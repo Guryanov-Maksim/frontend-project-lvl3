@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import resources from './locales';
 import addAndWatchFeeds from './application.js';
+import 'bootstrap/js/dist/modal.js';
 
 export default () => {
   const defaultLanguage = 'ru';
