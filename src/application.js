@@ -5,16 +5,6 @@ import parseRssContent from './parser.js';
 import createCrossOriginUrl from './url.js';
 import normalizeDom from './normalizer.js';
 
-yup.setLocale({
-  mixed: {
-    required: 'empty',
-    notOneOf: 'isAdded',
-  },
-  string: {
-    url: 'invalidUrl',
-  },
-});
-
 const validateUrl = (url, feeds) => {
   const trackedFeedUrls = feeds.map((feed) => feed.rssLink);
   const schema = yup
@@ -121,9 +111,9 @@ export default (state, i18nInstance) => {
     const rssLink = formData.get('rss-url');
 
     validateUrl(rssLink, watchedState.feeds)
-      .then((untrackedRssUrl) => {
+      .then((validUrl) => {
         watchedState.rssForm.state = 'loading';
-        addFeed(watchedState, elements, i18nInstance, untrackedRssUrl);
+        addFeed(watchedState, elements, i18nInstance, validUrl);
       })
       .catch((error) => {
         watchedState.rssForm.error = i18nInstance.t(`errors.${error.message}`);
