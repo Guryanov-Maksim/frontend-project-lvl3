@@ -108,6 +108,7 @@ test('add feeds and posts', async () => {
   userEvent.click(elements.submit);
 
   await waitFor(() => {
+    expect(screen.getByText('RSS успешно загружен')).toBeInTheDocument();
     expect(screen.getByText('Фиды')).toBeInTheDocument();
     expect(screen.getByText('Посты')).toBeInTheDocument();
     expect(screen.getByText(feed1.header)).toBeInTheDocument();
