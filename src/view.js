@@ -1,7 +1,16 @@
 import onChange from 'on-change';
 
-const renderForm = (formState, elements) => {
+const renderFeedback = (error, container, i18nInstance) => {
+  container.textContent = error
+    ? i18nInstance.t(`errors.${error}`)
+    : i18nInstance.t('success');
+};
+
+const renderForm = (formState, elements, i18nInstance) => {
   switch (formState) {
+    case 'loaded':
+      renderFeedback(null, elements.feedback, i18nInstance);
+      break;
     case 'loading':
       elements.input.classList.remove('border', 'border-warning');
       elements.addButton.setAttribute('disabled', true);
@@ -25,10 +34,6 @@ const renderForm = (formState, elements) => {
       throw new Error(`Unsupported state: ${formState}`);
     }
   }
-};
-
-const renderFeedback = (error, container, i18nInstance) => {
-  container.textContent = i18nInstance.t(`errors.${error}`);
 };
 
 const renderFeeds = (feeds, container, i18nInstance) => {
@@ -131,7 +136,7 @@ const initView = (state, elements, i18nInstance) => {
     'rssForm.error': () => renderFeedback(state.rssForm.error, elements.feedback, i18nInstance),
     feeds: () => renderFeeds(state.feeds, elements.feedContainer, i18nInstance),
     posts: (watchedState) => renderPosts(watchedState, elements, i18nInstance),
-    'rssForm.state': () => renderForm(state.rssForm.state, elements),
+    'rssForm.state': () => renderForm(state.rssForm.state, elements, i18nInstance),
     'uiState.activePostId': (watchedState) => {
       renderModal(watchedState, elements);
       renderPostLink(watchedState.uiState.activePostId, elements);
