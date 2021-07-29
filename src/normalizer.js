@@ -1,42 +1,31 @@
 import _ from 'lodash';
 
-const getElementDetails = (dom) => {
-  const titleElement = dom.querySelector('title');
-  const title = titleElement.textContent;
-  const descriptionElement = dom.querySelector('description');
-  const description = descriptionElement.textContent;
-  const linkElement = dom.querySelector('link');
-  const link = linkElement.textContent;
-  return {
+export default (parsedContent, rssLink) => {
+  const {
     title,
-    description,
     link,
-  };
-};
+    description,
+    posts,
+  } = parsedContent;
 
-export default (dom, rssLink) => {
-  const feedDetails = getElementDetails(dom);
   const feedId = _.uniqueId();
   const feed = {
-    title: feedDetails.title,
-    link: feedDetails.link,
-    description: feedDetails.description,
+    title,
+    link,
+    description,
     id: feedId,
     rssLink,
   };
 
-  const postElements = dom.querySelectorAll('item');
-  const posts = [...postElements].map((postElement) => {
-    const postDetails = getElementDetails(postElement);
-    const post = {
-      title: postDetails.title,
-      link: postDetails.link,
-      description: postDetails.description,
+  const normalizedPosts = posts.map((post) => (
+    {
+      title: post.title,
+      link: post.link,
+      description: post.description,
       feedId,
       id: _.uniqueId(),
-    };
-    return post;
-  });
+    }
+  ));
 
-  return { feed, posts };
+  return { feed, posts: normalizedPosts };
 };
