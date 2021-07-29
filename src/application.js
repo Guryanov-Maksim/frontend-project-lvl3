@@ -76,7 +76,7 @@ const addFeed = (state, elements, i18nInstance, rssLink) => {
       elements.input.focus();
     })
     .catch((error) => {
-      state.rssForm.error = i18nInstance.t(`errors.${error.message}`);
+      state.rssForm.error = error.message;
       state.rssForm.state = 'failed';
     })
     .then(() => {
@@ -115,7 +115,7 @@ export default (state, i18nInstance) => {
         addFeed(watchedState, elements, i18nInstance, validUrl);
       })
       .catch((error) => {
-        watchedState.rssForm.error = i18nInstance.t(`errors.${error.message}`);
+        watchedState.rssForm.error = error.message;
         watchedState.rssForm.state = 'failed';
       });
   });

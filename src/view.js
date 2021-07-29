@@ -27,8 +27,8 @@ const renderForm = (formState, elements) => {
   }
 };
 
-const renderFeedback = (error, container) => {
-  container.textContent = error;
+const renderFeedback = (error, container, i18nInstance) => {
+  container.textContent = i18nInstance.t(`errors.${error}`);
 };
 
 const renderFeeds = (feeds, container, i18nInstance) => {
@@ -128,7 +128,7 @@ const renderPosts = (state, elements, i18nInstance) => {
 
 const initView = (state, elements, i18nInstance) => {
   const mapping = {
-    'rssForm.error': () => renderFeedback(state.rssForm.error, elements.feedback),
+    'rssForm.error': () => renderFeedback(state.rssForm.error, elements.feedback, i18nInstance),
     feeds: () => renderFeeds(state.feeds, elements.feedContainer, i18nInstance),
     posts: (watchedState) => renderPosts(watchedState, elements, i18nInstance),
     'rssForm.state': () => renderForm(state.rssForm.state, elements),
