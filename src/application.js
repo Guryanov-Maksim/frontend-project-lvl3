@@ -68,7 +68,7 @@ const addFeed = (state, elements, i18nInstance, rssLink) => {
     .then((response) => parseRssContent(response.data.contents))
     .then((parsedContent) => normalizeContent(parsedContent, rssLink))
     .then(({ feed, posts }) => {
-      state.rssForm.error = i18nInstance.t('success');
+      state.rssForm.error = 'success';
       state.feeds = [feed, ...state.feeds];
       state.posts = [...posts, ...state.posts];
       state.rssForm.state = 'filling';
