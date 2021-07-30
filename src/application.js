@@ -53,14 +53,6 @@ const watchRssFeed = (watchedState, i18nInstance) => {
   }, timeout);
 };
 
-const watchMapping = {
-  stop: (state, i18nInstance) => {
-    state.rssWathing = 'run';
-    watchRssFeed(state, i18nInstance);
-  },
-  run: () => {},
-};
-
 const addFeed = (state, elements, i18nInstance, rssLink) => {
   const url = createCrossOriginUrl(rssLink);
 
@@ -79,9 +71,6 @@ const addFeed = (state, elements, i18nInstance, rssLink) => {
     .catch((error) => {
       state.rssForm.error = error.message;
       state.rssForm.state = 'failed';
-    })
-    .then(() => {
-      watchMapping[state.rssWatching](state, i18nInstance);
     });
 };
 
@@ -120,4 +109,5 @@ export default (state, i18nInstance) => {
         watchedState.rssForm.state = 'failed';
       });
   });
+  watchRssFeed(watchedState, i18nInstance);
 };
