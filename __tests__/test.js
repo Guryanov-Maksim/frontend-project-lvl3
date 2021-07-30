@@ -7,7 +7,7 @@ import path from 'path';
 import init from '../src/init.js';
 import createCrossOriginUrl from '../src/url.js';
 
-jest.setTimeout(8000);
+jest.setTimeout(15000);
 
 const createPath = (fileName) => path.join('__fixtures__', fileName);
 
@@ -133,7 +133,7 @@ test('add feeds and posts', async () => {
     const link = screen.getByText(feed1.post3.header);
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('href', feed1.post3.link);
-  }, { timeout: 6000 });
+  }, { timeout: 10000 });
 
   scope2.done();
 
