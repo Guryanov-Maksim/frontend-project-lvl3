@@ -1,3 +1,4 @@
 import ru from './ru.js';
+import errors from './errors.js';
 
-export default { ru };
+export { ru, errors };
