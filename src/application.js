@@ -49,7 +49,7 @@ const watchRssFeed = (watchedState, i18nInstance) => {
       .catch((error) => {
         throw error;
       })
-      .then(() => watchRssFeed(watchedState, i18nInstance));
+      .finally(() => watchRssFeed(watchedState, i18nInstance));
   }, timeout);
 };
 
