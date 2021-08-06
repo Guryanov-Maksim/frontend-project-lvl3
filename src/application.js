@@ -53,7 +53,8 @@ const watchRssFeed = (watchedState, i18nInstance) => {
   }, timeout);
 };
 
-const addFeed = (state, elements, i18nInstance, rssLink) => {
+const addFeed = (state, elements, rssLink) => {
+  state.rssForm.state = 'loading';
   const url = createCrossOriginUrl(rssLink);
 
   axios.get(url)
@@ -101,12 +102,13 @@ export default (state, i18nInstance) => {
 
     validateUrl(rssLink, watchedState.feeds)
       .then((validUrl) => {
-        watchedState.rssForm.state = 'loading';
-        addFeed(watchedState, elements, i18nInstance, validUrl);
+        watchedState.rssForm.error = null;
+        watchedState.rssForm.validationState = 'valid';
+        addFeed(watchedState, elements, validUrl);
       })
       .catch((error) => {
         watchedState.rssForm.error = error.message;
-        watchedState.rssForm.state = 'failed';
+        watchedState.rssForm.validationState = 'invalid';
       });
   });
   watchRssFeed(watchedState, i18nInstance);

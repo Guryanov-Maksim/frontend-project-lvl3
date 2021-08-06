@@ -22,6 +22,7 @@ export default () => {
       rssForm: {
         error: null,
         state: 'filling',
+        validationState: 'valid',
       },
       uiState: {
         visitedPostIds: new Set(),

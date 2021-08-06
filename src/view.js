@@ -1,37 +1,56 @@
 import onChange from 'on-change';
 
 const renderFeedback = (error, container, i18nInstance) => {
-  container.textContent = error
-    ? i18nInstance.t(`errors.${error}`)
-    : i18nInstance.t('success');
+  if (error) {
+    container.textContent = i18nInstance.t(`errors.${error}`);
+    container.classList.add('text-danger');
+    container.classList.remove('text-success');
+    return;
+  }
+  container.textContent = i18nInstance.t('success');
+  container.classList.remove('text-danger');
+  container.classList.add('text-success');
+};
+
+const renderValidationResult = (formState, elements, i18nInstance) => {
+  const { error, validationState } = formState;
+  const { feedback, input } = elements;
+  switch (validationState) {
+    case 'valid': {
+      input.classList.remove('border', 'border-warning');
+      break;
+    }
+    case 'invalid': {
+      renderFeedback(error, feedback, i18nInstance);
+      input.classList.add('border', 'border-warning');
+      break;
+    }
+    default:
+      throw new Error(`Unsupported validation state: ${validationState}`);
+  }
 };
 
 const renderForm = (formState, elements, i18nInstance) => {
-  switch (formState) {
+  const { error, state } = formState;
+  switch (state) {
     case 'loaded':
       renderFeedback(null, elements.feedback, i18nInstance);
       break;
     case 'loading':
-      elements.input.classList.remove('border', 'border-warning');
       elements.addButton.setAttribute('disabled', true);
       elements.input.setAttribute('readonly', true);
       break;
     case 'filling':
       elements.addButton.removeAttribute('disabled');
       elements.input.removeAttribute('readonly');
-      elements.feedback.classList.remove('text-danger');
-      elements.feedback.classList.add('text-success');
-      elements.input.classList.remove('border', 'border-warning');
       break;
     case 'failed':
-      elements.feedback.classList.add('text-danger');
-      elements.feedback.classList.remove('text-success');
+      renderFeedback(error, elements.feedback, i18nInstance);
       elements.addButton.removeAttribute('disabled');
       elements.input.removeAttribute('readonly');
-      elements.input.classList.add('border', 'border-warning');
       break;
     default: {
-      throw new Error(`Unsupported state: ${formState}`);
+      throw new Error(`Unsupported state: ${state}`);
     }
   }
 };
@@ -133,10 +152,10 @@ const renderPosts = (state, elements, i18nInstance) => {
 
 const initView = (state, elements, i18nInstance) => {
   const mapping = {
-    'rssForm.error': () => renderFeedback(state.rssForm.error, elements.feedback, i18nInstance),
     feeds: () => renderFeeds(state.feeds, elements.feedContainer, i18nInstance),
     posts: (watchedState) => renderPosts(watchedState, elements, i18nInstance),
-    'rssForm.state': () => renderForm(state.rssForm.state, elements, i18nInstance),
+    'rssForm.state': () => renderForm(state.rssForm, elements, i18nInstance),
+    'rssForm.validationState': () => renderValidationResult(state.rssForm, elements, i18nInstance),
     'uiState.activePostId': (watchedState) => {
       renderModal(watchedState, elements);
       renderPostLink(watchedState.uiState.activePostId, elements);
