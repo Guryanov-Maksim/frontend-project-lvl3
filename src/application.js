@@ -66,8 +66,6 @@ const addFeed = (state, elements, rssLink) => {
       state.feeds = [feed, ...state.feeds];
       state.posts = [...posts, ...state.posts];
       state.rssForm.state = 'filling';
-      elements.form.reset();
-      elements.input.focus();
     })
     .catch((error) => {
       state.rssForm.error = error.message;

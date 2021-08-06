@@ -43,6 +43,8 @@ const renderForm = (formState, elements, i18nInstance) => {
     case 'filling':
       elements.addButton.removeAttribute('disabled');
       elements.input.removeAttribute('readonly');
+      elements.form.reset();
+      elements.input.focus();
       break;
     case 'failed':
       renderFeedback(error, elements.feedback, i18nInstance);
