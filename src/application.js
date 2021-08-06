@@ -1,9 +1,9 @@
 import axios from 'axios';
 import * as yup from 'yup';
 import initView from './view.js';
-import parseRssContent from './parser.js';
+import parse from './parser.js';
 import createCrossOriginUrl from './url.js';
-import normalizeContent from './normalizer.js';
+import normalize from './normalizer.js';
 
 const validateUrl = (url, feeds) => {
   const trackedFeedUrls = feeds.map((feed) => feed.rssLink);
@@ -38,8 +38,8 @@ const watchRssFeed = (watchedState, i18nInstance) => {
       return axios.get(url);
     });
     Promise.all(promises)
-      .then((responses) => responses.map((response) => parseRssContent(response.data.contents)))
-      .then((parsedContents) => parsedContents.map((content) => normalizeContent(content)))
+      .then((responses) => responses.map((response) => parse(response.data.contents)))
+      .then((parsedContents) => parsedContents.map((content) => normalize(content)))
       .then((normalizedContents) => {
         normalizedContents.forEach(({ feed, posts }) => {
           const newPosts = getNewPosts(posts, watchedState, feed);
@@ -58,8 +58,8 @@ const addFeed = (state, elements, rssLink) => {
   const url = createCrossOriginUrl(rssLink);
 
   axios.get(url)
-    .then((response) => parseRssContent(response.data.contents))
-    .then((parsedContent) => normalizeContent(parsedContent, rssLink))
+    .then((response) => parse(response.data.contents))
+    .then((parsedContent) => normalize(parsedContent, rssLink))
     .then(({ feed, posts }) => {
       state.rssForm.state = 'loaded';
       state.rssForm.error = null;
