@@ -3,29 +3,25 @@ import _ from 'lodash';
 export default (parsedContent, rssLink) => {
   const {
     title,
-    link,
     description,
-    posts,
+    items,
   } = parsedContent;
 
   const feedId = _.uniqueId();
   const feed = {
     title,
-    link,
     description,
     id: feedId,
     rssLink,
   };
 
-  const normalizedPosts = posts.map((post) => (
+  const posts = items.map((item) => (
     {
-      title: post.title,
-      link: post.link,
-      description: post.description,
+      ...item,
       feedId,
       id: _.uniqueId(),
     }
   ));
 
-  return { feed, posts: normalizedPosts };
+  return { feed, posts };
 };
