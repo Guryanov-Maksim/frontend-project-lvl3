@@ -25,7 +25,7 @@ const getFeedAndPosts = (rssLink, state) => {
     .then((parsedContent) => normalize(parsedContent, rssLink, state));
 };
 
-const watchRssFeed = (state, i18nInstance) => {
+const watchRssFeed = (state) => {
   const { feeds } = state;
   const links = feeds.map((feed) => feed.rssLink);
   const timeout = 5000;
@@ -45,11 +45,11 @@ const watchRssFeed = (state, i18nInstance) => {
       .catch((error) => {
         throw error;
       })
-      .finally(() => watchRssFeed(state, i18nInstance));
+      .finally(() => watchRssFeed(state));
   }, timeout);
 };
 
-const addFeed = (state, elements, rssLink) => {
+const addFeed = (state, rssLink) => {
   state.rssForm.state = 'loading';
 
   getFeedAndPosts(rssLink, state)
@@ -95,12 +95,12 @@ export default (state, i18nInstance) => {
       .then((validUrl) => {
         watchedState.rssForm.error = null;
         watchedState.rssForm.validationState = 'valid';
-        addFeed(watchedState, elements, validUrl);
+        addFeed(watchedState, validUrl);
       })
       .catch((error) => {
         watchedState.rssForm.error = error.message;
         watchedState.rssForm.validationState = 'invalid';
       });
   });
-  watchRssFeed(watchedState, i18nInstance);
+  watchRssFeed(watchedState);
 };
