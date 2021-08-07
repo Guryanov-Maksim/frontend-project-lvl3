@@ -50,19 +50,19 @@ const watchRssFeed = (state) => {
 };
 
 const addFeed = (state, rssLink) => {
-  state.rssForm.state = 'loading';
+  state.feedAddingProcess.state = 'loading';
 
   getFeedAndPosts(rssLink, state)
     .then(({ feed, posts }) => {
-      state.rssForm.state = 'loaded';
-      state.rssForm.error = null;
+      state.feedAddingProcess.state = 'loaded';
+      state.feedAddingProcess.error = null;
       state.feeds = [feed, ...state.feeds];
       state.posts = [...posts, ...state.posts];
-      state.rssForm.state = 'filling';
+      state.feedAddingProcess.state = 'filling';
     })
     .catch((error) => {
-      state.rssForm.error = error.message;
-      state.rssForm.state = 'failed';
+      state.feedAddingProcess.error = error.message;
+      state.feedAddingProcess.state = 'failed';
     });
 };
 
@@ -93,13 +93,13 @@ export default (state, i18nInstance) => {
 
     validateUrl(rssLink, watchedState.feeds)
       .then((validUrl) => {
-        watchedState.rssForm.error = null;
-        watchedState.rssForm.validationState = 'valid';
+        watchedState.feedAddingProcess.error = null;
+        watchedState.feedAddingProcess.validationState = 'valid';
         addFeed(watchedState, validUrl);
       })
       .catch((error) => {
-        watchedState.rssForm.error = error.message;
-        watchedState.rssForm.validationState = 'invalid';
+        watchedState.feedAddingProcess.error = error.message;
+        watchedState.feedAddingProcess.validationState = 'invalid';
       });
   });
   watchRssFeed(watchedState);

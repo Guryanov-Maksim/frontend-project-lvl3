@@ -19,7 +19,7 @@ export default () => {
     const state = {
       feeds: [],
       posts: [],
-      rssForm: {
+      feedAddingProcess: {
         error: null,
         state: 'filling',
         validationState: 'valid',

@@ -34,7 +34,7 @@ const renderForm = (formState, elements, i18nInstance) => {
   const { error, state } = formState;
   switch (state) {
     case 'loaded':
-      renderFeedback(null, elements.feedback, i18nInstance);
+      renderFeedback(error, elements.feedback, i18nInstance);
       break;
     case 'loading':
       elements.addButton.setAttribute('disabled', true);
@@ -156,8 +156,8 @@ const initView = (state, elements, i18nInstance) => {
   const mapping = {
     feeds: () => renderFeeds(state.feeds, elements.feedContainer, i18nInstance),
     posts: (watchedState) => renderPosts(watchedState, elements, i18nInstance),
-    'rssForm.state': () => renderForm(state.rssForm, elements, i18nInstance),
-    'rssForm.validationState': () => renderValidationResult(state.rssForm, elements, i18nInstance),
+    'feedAddingProcess.state': () => renderForm(state.feedAddingProcess, elements, i18nInstance),
+    'feedAddingProcess.validationState': () => renderValidationResult(state.feedAddingProcess, elements, i18nInstance),
     'uiState.activePostId': (watchedState) => {
       renderModal(watchedState, elements);
       renderPostLink(watchedState.uiState.activePostId, elements);
