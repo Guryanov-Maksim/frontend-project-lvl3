@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import axios from 'axios';
 import * as yup from 'yup';
 import initView from './view.js';
@@ -16,18 +17,6 @@ const validateUrl = (url, feeds) => {
   return schema.validate(url);
 };
 
-const getNewPosts = (posts, state, feed) => {
-  const attachedFeed = state.feeds.find((feedInState) => feed.link === feedInState.link);
-  const feedPosts = state.posts.filter((post) => post.feedId === attachedFeed.id);
-  const newPosts = posts
-    .filter((post) => !feedPosts.some((feedPost) => feedPost.link === post.link))
-    .map((post) => {
-      post.feedId = attachedFeed.id;
-      return post;
-    });
-  return newPosts;
-};
-
 const watchRssFeed = (watchedState, i18nInstance) => {
   const { feeds } = watchedState;
   const links = feeds.map((feed) => feed.rssLink);
@@ -43,8 +32,12 @@ const watchRssFeed = (watchedState, i18nInstance) => {
         (content, index) => normalize(content, links[index], watchedState),
       ))
       .then((normalizedContents) => {
-        normalizedContents.forEach(({ feed, posts }) => {
-          const newPosts = getNewPosts(posts, watchedState, feed);
+        normalizedContents.forEach(({ posts }) => {
+          const newPosts = _.differenceWith(
+            posts,
+            watchedState.posts,
+            ((post1, post2) => post1.link === post2.link),
+          );
           watchedState.posts = [...newPosts, ...watchedState.posts];
         });
       })
