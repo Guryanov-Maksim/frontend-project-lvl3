@@ -39,7 +39,9 @@ const watchRssFeed = (watchedState, i18nInstance) => {
     });
     Promise.all(promises)
       .then((responses) => responses.map((response) => parse(response.data.contents)))
-      .then((parsedContents) => parsedContents.map((content) => normalize(content)))
+      .then((parsedContents) => parsedContents.map(
+        (content, index) => normalize(content, links[index], watchedState),
+      ))
       .then((normalizedContents) => {
         normalizedContents.forEach(({ feed, posts }) => {
           const newPosts = getNewPosts(posts, watchedState, feed);
@@ -59,7 +61,7 @@ const addFeed = (state, elements, rssLink) => {
 
   axios.get(url)
     .then((response) => parse(response.data.contents))
-    .then((parsedContent) => normalize(parsedContent, rssLink))
+    .then((parsedContent) => normalize(parsedContent, rssLink, state))
     .then(({ feed, posts }) => {
       state.rssForm.state = 'loaded';
       state.rssForm.error = null;
