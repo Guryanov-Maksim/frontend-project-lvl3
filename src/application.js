@@ -42,7 +42,7 @@ const watchRssFeed = (state) => {
         });
       })
       .catch((error) => {
-        throw error;
+        console.error(error);
       })
       .finally(() => watchRssFeed(state));
   }, timeout);
