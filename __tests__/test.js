@@ -5,7 +5,6 @@ import nock from 'nock';
 import fs from 'fs';
 import path from 'path';
 import init from '../src/init.js';
-import createCrossOriginUrl from '../src/url.js';
 
 jest.setTimeout(15000);
 
@@ -36,7 +35,8 @@ const getTestData = async (responses) => {
 };
 
 const createHttpMock = (link, response = '') => {
-  const url = new URL(createCrossOriginUrl(link));
+  const crossOriginUrl = `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(link)}&disableCache=true`;
+  const url = new URL(crossOriginUrl);
   const scope = nock(url.origin)
     .defaultReplyHeaders({
       'access-control-allow-origin': '*',

@@ -3,7 +3,6 @@ import axios from 'axios';
 import * as yup from 'yup';
 import initView from './view.js';
 import parse from './parser.js';
-import createCrossOriginUrl from './url.js';
 import normalize from './normalizer.js';
 
 const validateUrl = (url, feeds) => {
@@ -18,9 +17,9 @@ const validateUrl = (url, feeds) => {
 };
 
 const getFeedAndPosts = (rssLink, state) => {
-  const url = createCrossOriginUrl(rssLink);
+  const crossOriginUrl = `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(rssLink)}&disableCache=true`;
 
-  return axios.get(url)
+  return axios.get(crossOriginUrl)
     .then((response) => parse(response.data.contents))
     .then((parsedContent) => normalize(parsedContent, rssLink, state));
 };
