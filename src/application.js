@@ -17,44 +17,42 @@ const validateUrl = (url, feeds) => {
   return schema.validate(url);
 };
 
-const watchRssFeed = (watchedState, i18nInstance) => {
-  const { feeds } = watchedState;
+const getFeedAndPosts = (rssLink, state) => {
+  const url = createCrossOriginUrl(rssLink);
+
+  return axios.get(url)
+    .then((response) => parse(response.data.contents))
+    .then((parsedContent) => normalize(parsedContent, rssLink, state));
+};
+
+const watchRssFeed = (state, i18nInstance) => {
+  const { feeds } = state;
   const links = feeds.map((feed) => feed.rssLink);
   const timeout = 5000;
   setTimeout(() => {
-    const promises = links.map((link) => {
-      const url = createCrossOriginUrl(link);
-      return axios.get(url);
-    });
+    const promises = links.map((link) => getFeedAndPosts(link, state));
     Promise.all(promises)
-      .then((responses) => responses.map((response) => parse(response.data.contents)))
-      .then((parsedContents) => parsedContents.map(
-        (content, index) => normalize(content, links[index], watchedState),
-      ))
-      .then((normalizedContents) => {
-        normalizedContents.forEach(({ posts }) => {
+      .then((feedsWithPosts) => {
+        feedsWithPosts.forEach(({ posts }) => {
           const newPosts = _.differenceWith(
             posts,
-            watchedState.posts,
+            state.posts,
             ((post1, post2) => post1.link === post2.link),
           );
-          watchedState.posts = [...newPosts, ...watchedState.posts];
+          state.posts = [...newPosts, ...state.posts];
         });
       })
       .catch((error) => {
         throw error;
       })
-      .finally(() => watchRssFeed(watchedState, i18nInstance));
+      .finally(() => watchRssFeed(state, i18nInstance));
   }, timeout);
 };
 
 const addFeed = (state, elements, rssLink) => {
   state.rssForm.state = 'loading';
-  const url = createCrossOriginUrl(rssLink);
 
-  axios.get(url)
-    .then((response) => parse(response.data.contents))
-    .then((parsedContent) => normalize(parsedContent, rssLink, state))
+  getFeedAndPosts(rssLink, state)
     .then(({ feed, posts }) => {
       state.rssForm.state = 'loaded';
       state.rssForm.error = null;
