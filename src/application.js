@@ -65,7 +65,9 @@ const addFeed = (state, rssLink) => {
       state.feedAddingProcess.state = 'filling';
     })
     .catch((error) => {
-      state.feedAddingProcess.error = error.message;
+      state.feedAddingProcess.error = axios.isAxiosError(error)
+        ? 'network'
+        : error.message;
       state.feedAddingProcess.state = 'failed';
     });
 };
