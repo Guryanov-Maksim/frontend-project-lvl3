@@ -77,11 +77,9 @@ export default (state, i18nInstance) => {
     postsContainer: document.querySelector('.posts'),
     input: document.querySelector('[data-url = "url"]'),
     addButton: document.querySelector('#feed-submit'),
-    modal: document.querySelector('#exampleModal'),
     modalTitle: document.querySelector('.modal-title'),
     modalBody: document.querySelector('.modal-body'),
     modalDetails: document.querySelector('[data-details]'),
-    closeButtons: document.querySelectorAll('[data-bs-dismiss="modal"]'),
     form: document.querySelector('.rss-form'),
   };
 
