@@ -5,6 +5,8 @@ import initView from './view.js';
 import parse from './parser.js';
 import normalize from './normalizer.js';
 
+const postsUpdateTimeout = 5000;
+
 const addProxy = (url) => `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`;
 
 const validateUrl = (url, feeds) => {
@@ -32,7 +34,7 @@ const getFeedAndPosts = (rssLink, state) => {
 const watchRssFeed = (state) => {
   const { feeds } = state;
   const links = feeds.map((feed) => feed.rssLink);
-  const timeout = 5000;
+
   setTimeout(() => {
     const promises = links.map((link) => getFeedAndPosts(link, state));
     Promise.all(promises)
@@ -50,7 +52,7 @@ const watchRssFeed = (state) => {
         console.error(error);
       })
       .finally(() => watchRssFeed(state));
-  }, timeout);
+  }, postsUpdateTimeout);
 };
 
 const addFeed = (state, rssLink) => {
