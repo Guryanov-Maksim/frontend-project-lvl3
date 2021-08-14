@@ -10,6 +10,8 @@ jest.setTimeout(15000);
 
 const createPath = (fileName) => path.join('__fixtures__', fileName);
 
+const addProxy = (url) => `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`;
+
 const responsesForMocks = {
   feedsAndPosts: 'feedsAndPosts.json',
   initialHtml: 'index.html',
@@ -35,7 +37,7 @@ const getTestData = async (responses) => {
 };
 
 const createHttpMock = (link, response = '') => {
-  const crossOriginUrl = `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(link)}&disableCache=true`;
+  const crossOriginUrl = addProxy(link);
   const url = new URL(crossOriginUrl);
   const scope = nock(url.origin)
     .defaultReplyHeaders({

@@ -5,6 +5,8 @@ import initView from './view.js';
 import parse from './parser.js';
 import normalize from './normalizer.js';
 
+const addProxy = (url) => `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}&disableCache=true`;
+
 const validateUrl = (url, feeds) => {
   const trackedFeedUrls = feeds.map((feed) => feed.rssLink);
   const schema = yup
@@ -17,7 +19,7 @@ const validateUrl = (url, feeds) => {
 };
 
 const getFeedAndPosts = (rssLink, state) => {
-  const crossOriginUrl = `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(rssLink)}&disableCache=true`;
+  const crossOriginUrl = addProxy(rssLink);
 
   return axios.get(crossOriginUrl)
     .then((response) => parse(response.data.contents))
