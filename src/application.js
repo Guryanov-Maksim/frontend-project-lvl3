@@ -26,8 +26,8 @@ const getFeedAndPosts = (rssLink, state) => {
   return axios.get(crossOriginUrl)
     .then((response) => parse(response.data.contents))
     .then((parsedContent) => {
-      const attachedFeed = state.feeds.find((feedInState) => feedInState.rssLink === rssLink);
-      return normalize(parsedContent, rssLink, attachedFeed);
+      const attachedFeed = state.feeds.find((feed) => feed.rssLink === rssLink) || { rssLink };
+      return normalize(parsedContent, attachedFeed);
     });
 };
 

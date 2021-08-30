@@ -1,13 +1,14 @@
 import _ from 'lodash';
 
-export default (parsedContent, rssLink, attachedFeed) => {
+export default (parsedContent, attachedFeed) => {
   const {
     title,
     description,
     items,
   } = parsedContent;
+  const { rssLink } = attachedFeed;
 
-  const feedId = attachedFeed ? attachedFeed.id : _.uniqueId();
+  const feedId = _.get(attachedFeed, 'id', _.uniqueId());
   const feed = {
     title,
     description,
