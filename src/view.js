@@ -1,10 +1,5 @@
 import onChange from 'on-change';
 
-const handlePostWatch = (uiState, post) => {
-  uiState.activePostId = post.id;
-  uiState.visitedPostIds.add(post.id);
-};
-
 const initView = (appState, elements, i18nInstance) => {
   const {
     feedback,
@@ -119,22 +114,13 @@ const initView = (appState, elements, i18nInstance) => {
       button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
       button.setAttribute('data-bs-toggle', 'modal');
       button.setAttribute('data-bs-target', '#exampleModal');
+      button.setAttribute('data-id', post.id);
       button.textContent = i18nInstance.t('posts.seeButton');
 
       const li = document.createElement('li');
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
       li.append(link);
       li.append(button);
-      li.addEventListener('click', (event) => {
-        switch (event.target) {
-          case button:
-          case link:
-            handlePostWatch(state.uiState, post);
-            break;
-          default:
-            break;
-        }
-      });
 
       ul.append(li);
     });

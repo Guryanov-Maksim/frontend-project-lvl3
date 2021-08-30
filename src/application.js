@@ -91,6 +91,14 @@ export default (state, i18nInstance) => {
 
   const watchedState = initView(state, elements, i18nInstance);
 
+  elements.postsContainer.addEventListener('click', (event) => {
+    const { id } = event.target.dataset;
+    if (id) {
+      watchedState.uiState.activePostId = id;
+      watchedState.uiState.visitedPostIds.add(id);
+    }
+  });
+
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
 
