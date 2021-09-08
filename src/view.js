@@ -13,16 +13,16 @@ const initView = (appState, elements, i18nInstance) => {
     form,
   } = elements;
 
-  const renderFeedback = (error, container) => {
+  const renderFeedback = (error) => {
     if (error) {
-      container.textContent = i18nInstance.t(`errors.${error}`);
-      container.classList.add('text-danger');
-      container.classList.remove('text-success');
+      feedback.textContent = i18nInstance.t(`errors.${error}`);
+      feedback.classList.add('text-danger');
+      feedback.classList.remove('text-success');
       return;
     }
-    container.textContent = i18nInstance.t('success');
-    container.classList.remove('text-danger');
-    container.classList.add('text-success');
+    feedback.textContent = i18nInstance.t('success');
+    feedback.classList.remove('text-danger');
+    feedback.classList.add('text-success');
   };
 
   const renderFeeds = ({ feeds }) => {
@@ -56,7 +56,7 @@ const initView = (appState, elements, i18nInstance) => {
   const renderForm = ({ feedAddingProcess: { error, state } }) => {
     switch (state) {
       case 'loaded':
-        renderFeedback(error, feedback);
+        renderFeedback(error);
         break;
       case 'loading':
         addButton.setAttribute('disabled', true);
@@ -69,7 +69,7 @@ const initView = (appState, elements, i18nInstance) => {
         input.focus();
         break;
       case 'failed':
-        renderFeedback(error, feedback);
+        renderFeedback(error);
         addButton.removeAttribute('disabled');
         input.removeAttribute('readonly');
         break;
@@ -140,7 +140,7 @@ const initView = (appState, elements, i18nInstance) => {
         break;
       }
       case 'invalid': {
-        renderFeedback(error, feedback);
+        renderFeedback(error);
         input.classList.add('border', 'border-warning');
         break;
       }
