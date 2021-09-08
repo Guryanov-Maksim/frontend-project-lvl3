@@ -20,14 +20,15 @@ const validateUrl = (url, feeds) => {
   return schema.validate(url);
 };
 
-const getFeedAndPosts = (rssLink, state) => {
+const getFeedAndPosts = (rssLink, { feeds }) => {
   const crossOriginUrl = addProxy(rssLink);
 
   return axios.get(crossOriginUrl)
     .then((response) => parse(response.data.contents))
-    .then((feedData) => (
-      normalize(feedData, state.feeds.find((feed) => feed.rssLink === rssLink) || { rssLink })
-    ));
+    .then((feedData) => {
+      const feed = feeds.find((feedInState) => feedInState.rssLink === rssLink) || { rssLink };
+      return normalize(feedData, feed);
+    });
 };
 
 const watchRssFeed = (state) => {
