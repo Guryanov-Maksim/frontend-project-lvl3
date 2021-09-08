@@ -150,23 +150,21 @@ const initView = (appState, elements, i18nInstance) => {
   };
 
   const mapping = {
-    feeds: () => renderFeeds(appState),
-    'feedAddingProcess.state': () => renderForm(appState),
-    'feedAddingProcess.validationState': () => renderValidationResult(appState),
-    posts: (watchedState) => renderPosts(watchedState),
-    'uiState.activePostId': (watchedState) => {
-      renderModal(watchedState);
-      renderPostLink(watchedState);
+    feeds: (state) => renderFeeds(state),
+    'feedAddingProcess.state': (state) => renderForm(state),
+    'feedAddingProcess.validationState': (state) => renderValidationResult(state),
+    posts: (state) => renderPosts(state),
+    'uiState.activePostId': (state) => {
+      renderModal(state);
+      renderPostLink(state);
     },
   };
 
-  const watchedState = onChange(appState, (path) => {
+  return onChange(appState, (path) => {
     if (mapping[path]) {
-      mapping[path](watchedState);
+      mapping[path](appState);
     }
   });
-
-  return watchedState;
 };
 
 export default initView;
